@@ -1,131 +1,168 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio | Software Engineer</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>Nguyễn Phúc Xuân Ngân | Portfolio</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 
 <body>
-    <nav>
-        <div class="container">
-            <div class="logo">H2K1<span>.</span></div>
-            <ul class="nav-links">
-                <li><a href="#about">Giới thiệu</a></li>
-                <li><a href="#experience">Kinh nghiệm</a></li>
-                <li><a href="#skills">Kỹ năng</a></li>
-                <li><a href="#contact">Liên hệ</a></li>
-            </ul>
-        </div>
-    </nav>
-
     <header>
-        <div class="container">
-            <h1>Software Engineer & <span>Full-stack Developer</span></h1>
-            <p class="hero-subtext">Kiến tạo những giải pháp phần mềm tối ưu với tư duy thẩm mỹ và hiệu suất cao. Chuyên
-                sâu về hệ thống giám sát và quản lý dữ liệu.</p>
-            <div class="header-btns">
-                <a href="#projects" class="btn btn-primary">Xem dự án</a>
-                <a href="#contact" class="btn btn-secondary">Liên hệ ngay</a>
+        <nav class="nav-wrap">
+            <div class="logo">XANA</div>
+            <div class="nav-right">
+                <ul>
+                    <li><a href="#about" data-vi="Về tôi" data-en="About">Về tôi</a></li>
+                    <li><a href="#projects" data-vi="Dự án" data-en="Projects">Dự án</a></li>
+                    <li><a href="#contact" data-vi="Liên hệ" data-en="Contact">Liên hệ</a></li>
+                </ul>
+                <button id="lang-toggle" class="lang-toggle">EN</button>
             </div>
-        </div>
+        </nav>
     </header>
 
-    <section id="about" class="container reveal">
-        <div class="section-title">
-            <h2>Về tôi 🍃</h2>
-            <div class="underline"></div>
+    <section class="hero reveal">
+        <div class="leaf-decoration left">🌿</div>
+        <div class="leaf-decoration right">🍃</div>
+        <div class="hero-card">
+            <div class="hero-avatar">
+                <span>X N</span>
+            </div>
+            <div class="hero-content">
+                <h1 data-vi="NGUYỄN PHÚC XUÂN NGÂN" data-en="NGUYEN PHUC XUAN NGAN">NGUYỄN PHÚC XUÂN NGÂN</h1>
+                <p class="subtitle" data-vi="Content Writer | Content, PR, Social"
+                    data-en="Content Writer | Content, PR, Social">Content Writer | Content, PR, Social</p>
+                <p class="intro-text"
+                    data-vi="Với 2 năm kinh nghiệm tối ưu hóa nội dung thúc đẩy hành động của người dùng."
+                    data-en="With 2 years of experience optimizing content to drive user action.">Với 2 năm kinh nghiệm
+                    tối ưu hóa nội dung thúc đẩy hành động của người dùng.</p>
+            </div>
         </div>
-        <p class="about-text">Tôi là một nhà phát triển phần mềm đam mê công nghệ và sự tinh tế trong trải nghiệm người
-            dùng. Với kinh nghiệm làm việc trong các dự án thực tế tại các tập đoàn lớn, tôi tập trung vào việc xây dựng
-            hệ thống ổn định, sạch sẽ và dễ bảo trì.</p>
     </section>
 
-    <section id="experience" class="container reveal">
-        <div class="section-title">
-            <h2>Kinh nghiệm làm việc 💼</h2>
-            <div class="underline"></div>
-        </div>
-        <div class="timeline">
-            <div class="timeline-item">
-                <div class="timeline-dot"></div>
-                <div class="timeline-date">2022 - Hiện tại</div>
-                <div class="timeline-content">
-                    <h3>Software Engineer - Bosch Vietnam</h3>
-                    <p>Phát triển và tối ưu hóa hệ thống "Bosch Finish System". Chịu trách nhiệm thiết kế module giám
-                        sát lỗi thời gian thực, giúp giảm 15% thời gian phản ứng của kỹ thuật viên.</p>
-                    <div class="tags"><span>Python</span> <span>React</span> <span>PostgreSQL</span></div>
+    <section id="about" class="about reveal">
+        <h2 data-vi="Giới thiệu" data-en="About">Giới thiệu</h2>
+        <div class="about-grid">
+            <div class="about-text">
+                <p data-vi="Tôi tin rằng sức mạnh của nội dung nằm ở sự cân bằng: đủ đương đại để dẫn đầu xu hướng nhưng vẫn bám sát giá trị cốt lõi của thương hiệu."
+                    data-en="I believe the power of content lies in balance: modern enough to lead trends while staying true to brand values.">
+                    Tôi tin rằng sức mạnh của nội dung nằm ở sự cân bằng: đủ đương đại để dẫn đầu xu hướng nhưng vẫn bám
+                    sát giá trị cốt lõi của thương hiệu.</p>
+                <div class="skills-grid">
+                    <span data-vi="PR & Brand Storytelling" data-en="PR & Brand Storytelling">PR & Brand
+                        Storytelling</span>
+                    <span data-vi="Multi-platform Scriptwriting" data-en="Multi-platform Scriptwriting">Multi-platform
+                        Scriptwriting</span>
+                    <span data-vi="Social Copywriting" data-en="Social Copywriting">Social Copywriting</span>
+                    <span data-vi="Strategic Content Framework" data-en="Strategic Content Framework">Strategic Content
+                        Framework</span>
                 </div>
             </div>
-            <div class="timeline-item">
-                <div class="timeline-dot"></div>
-                <div class="timeline-date">2021 - 2022</div>
-                <div class="timeline-content">
-                    <h3>Junior Developer (Internship)</h3>
-                    <p>Tham gia xây dựng các hệ thống quản lý log nội bộ và tối ưu hóa truy vấn cơ sở dữ liệu cho hệ
-                        thống ERP.</p>
-                    <div class="tags"><span>Node.js</span> <span>Docker</span> <span>ELK Stack</span></div>
+        </div>
+    </section>
+
+    <section id="projects" class="projects reveal">
+        <h2 data-vi="Dự án nổi bật" data-en="Featured Projects">Dự án nổi bật</h2>
+        <div class="project-list">
+            <a href="project-mb-bank.html" class="project-card">
+                <div class="project-thumb project-thumb-1" aria-hidden="true"><span>MB</span></div>
+                <div class="project-info">
+                    <h3 data-vi="Cây “Yêu Nước” MB" data-en="MB “Country Love” Campaign">Cây “Yêu Nước” MB</h3>
+                    <p data-vi="Chiến dịch CSR đạt hơn 3,000,000 tương tác số."
+                        data-en="CSR campaign reaching over 3,000,000 interactions.">Chiến dịch CSR đạt hơn 3,000,000
+                        tương tác số.</p>
+                    <span class="view-more" data-vi="Xem chi tiết →" data-en="View details →">Xem chi tiết →</span>
                 </div>
-            </div>
+            </a>
+
+            <a href="project-vietinbank.html" class="project-card">
+                <div class="project-thumb project-thumb-2" aria-hidden="true"><span>VB</span></div>
+                <div class="project-info">
+                    <h3 data-vi="VietinBank Gold & Jewellery" data-en="VietinBank Gold & Jewellery">VietinBank Gold &
+                        Jewellery</h3>
+                    <p data-vi="Chiến dịch Tết Ất Tỵ 2025 - Ra mắt bộ sưu tập quà tặng."
+                        data-en="Tet 2025 campaign launching a premium gift collection.">Chiến dịch Tết Ất Tỵ 2025 - Ra
+                        mắt bộ sưu tập quà tặng.</p>
+                    <span class="view-more" data-vi="Xem chi tiết →" data-en="View details →">Xem chi tiết →</span>
+                </div>
+            </a>
+
+            <a href="project-ponnie-party.html" class="project-card">
+                <div class="project-thumb project-thumb-3" aria-hidden="true"><span>PP</span></div>
+                <div class="project-info">
+                    <h3 data-vi="PÖNNIE PARTY" data-en="PÖNNIE PARTY">PÖNNIE PARTY</h3>
+                    <p data-vi="Thứ 6 lên tiệc “sáusage” - Video viral với Macro KOL."
+                        data-en="Weekend party concept with viral video and macro KOL.">Thứ 6 lên tiệc “sáusage” - Video
+                        viral với Macro KOL.</p>
+                    <span class="view-more" data-vi="Xem chi tiết →" data-en="View details →">Xem chi tiết →</span>
+                </div>
+            </a>
+
+            <a href="project-nam-ngu.html" class="project-card">
+                <div class="project-thumb project-thumb-4" aria-hidden="true"><span>NN</span></div>
+                <div class="project-info">
+                    <h3 data-vi="Nam Ngư Phú Quốc" data-en="Nam Ngu Phu Quoc">Nam Ngư Phú Quốc</h3>
+                    <p data-vi="Launch sản phẩm mới đạt hơn 7,000,000 lượt xem."
+                        data-en="New product launch reached over 7,000,000 views.">Launch sản phẩm mới đạt hơn 7,000,000
+                        lượt xem.</p>
+                    <span class="view-more" data-vi="Xem chi tiết →" data-en="View details →">Xem chi tiết →</span>
+                </div>
+            </a>
+
+            <a href="project-oliv-series.html" class="project-card hidden">
+                <div class="project-thumb project-thumb-5" aria-hidden="true"><span>OL</span></div>
+                <div class="project-info">
+                    <h3 data-vi="Ôliv Series" data-en="Ôliv Series">Ôliv Series</h3>
+                    <p data-vi="Series sản phẩm dầu ô liu tự nhiên (08.03.2025 - 20.04.2026)."
+                        data-en="Natural olive oil product series (08.03.2025 - 20.04.2026).">Series sản phẩm dầu ô liu
+                        tự nhiên (08.03.2025 - 20.04.2026).</p>
+                    <span class="view-more" data-vi="Xem chi tiết →" data-en="View details →">Xem chi tiết →</span>
+                </div>
+            </a>
+
+            <a href="project-purite-series.html" class="project-card hidden">
+                <div class="project-thumb project-thumb-6" aria-hidden="true"><span>PU</span></div>
+                <div class="project-info">
+                    <h3 data-vi="Purité Series" data-en="Purité Series">Purité Series</h3>
+                    <p data-vi="Series sản phẩm tinh khiết bền vững (20.10.2024 - 08.03.2026)."
+                        data-en="Sustainable purity product series (20.10.2024 - 08.03.2026).">Series sản phẩm tinh
+                        khiết bền vững (20.10.2024 - 08.03.2026).</p>
+                    <span class="view-more" data-vi="Xem chi tiết →" data-en="View details →">Xem chi tiết →</span>
+                </div>
+            </a>
+
+            <a href="project-zott-2025.html" class="project-card hidden">
+                <div class="project-thumb project-thumb-7" aria-hidden="true"><span>ZT</span></div>
+                <div class="project-info">
+                    <h3 data-vi="ZOTT Full Year 2025" data-en="ZOTT Full Year 2025">ZOTT Full Year 2025</h3>
+                    <p data-vi="Chiến dịch toàn diện cho thương hiệu ZOTT năm 2025."
+                        data-en="Comprehensive campaign for ZOTT brand in 2025.">Chiến dịch toàn diện cho thương hiệu
+                        ZOTT năm 2025.</p>
+                    <span class="view-more" data-vi="Xem chi tiết →" data-en="View details →">Xem chi tiết →</span>
+                </div>
+            </a>
+        </div>
+
+        <div class="show-more-container">
+            <button id="show-more-btn" class="show-more-btn" data-vi="Xem thêm dự án" data-en="Show more projects">Xem
+                thêm dự án</button>
         </div>
     </section>
 
-    <section id="skills" class="container">
-        <h2>Kỹ năng chuyên môn 🌱</h2>
-        <div class="skills-grid">
-            <div class="skill-item">Frontend: React, HTML5, CSS3 (SCSS), JavaScript (ES6+)</div>
-            <div class="skill-item">Backend: Node.js, Firebase, RESTful API</div>
-            <div class="skill-item">Data & DevOps: ELK Stack, SQL, Git, Docker</div>
-            <div class="skill-item">Soft Skills: Tư duy phân tích, Giải quyết vấn đề, Làm việc nhóm</div>
-        </div>
-    </section>
-
-    <section id="projects" class="container reveal">
-        <div class="section-title">
-            <h2>Dự án tiêu biểu 🚀</h2>
-            <div class="underline"></div>
-        </div>
-        <div class="projects-grid">
-            <div class="card">
-                <div class="card-tag">Bosch Project</div>
-                <h3>Bosch Finish System 🏭</h3>
-                <p>Hệ thống giám sát dây chuyền sản xuất thực tế tại Bosch. Tối ưu hóa hiệu suất và phân tích dữ liệu
-                    lỗi theo thời gian thực.</p>
-                <div class="card-footer"><a href="#">Chi tiết →</a></div>
+    <footer id="contact" class="footer reveal">
+        <div class="footer-content">
+            <h2 data-vi="Hãy kết nối cùng Ngân!" data-en="Let's connect!">Hãy kết nối cùng Ngân!</h2>
+            <p data-vi="Email: xuanganxn@gmail.com" data-en="Email: xuanganxn@gmail.com">Email: xuanganxn@gmail.com</p>
+            <p data-vi="SĐT: (+84) 328-818-165" data-en="Phone: (+84) 328-818-165">SĐT: (+84) 328-818-165</p>
+            <div class="social-links">
+                <a href="https://linkedin.com/in/xuanganxn/" data-vi="LinkedIn" data-en="LinkedIn">LinkedIn</a>
             </div>
-            <div class="card">
-                <div class="card-tag">Data System</div>
-                <h3>Log Monitor System 🍃</h3>
-                <p>Xây dựng hệ thống quản lý Log tập trung bằng ELK Stack, giúp phát hiện lỗi hệ thống sớm 40%.</p>
-                <div class="card-footer"><a href="#">Chi tiết →</a></div>
-            </div>
-            <div class="card">
-                <div class="card-tag">Application</div>
-                <h3>Time Management App 💚</h3>
-                <p>Ứng dụng quản lý thời gian đa nền tảng sử dụng React và Firebase, tích hợp thông báo thời gian thực.
-                </p>
-                <div class="card-footer"><a href="#">Chi tiết →</a></div>
-            </div>
-        </div>
-    </section>
-
-    <footer id="contact">
-        <div class="container">
-            <h2>Liên hệ 📬</h2>
-            <p>Sẵn sàng cho những cơ hội mới và những dự án đầy thách thức.</p>
-            <div class="contact-links">
-                <a href="mailto:contact@h2k1.dev">Email</a>
-                <a href="#">LinkedIn</a>
-                <a href="#">GitHub</a>
-            </div>
-            <p class="copyright">&copy; 2024 Designed & Built by H2K1</p>
         </div>
     </footer>
+
     <script src="script.js"></script>
 </body>
 
