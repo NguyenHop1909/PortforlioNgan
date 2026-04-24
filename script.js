@@ -99,8 +99,39 @@ const initShowMore = () => {
     }
 };
 
+const getSavedTheme = () => localStorage.getItem('portfolioTheme') || 'light';
+
+const setTheme = (theme) => {
+    document.body.classList.toggle('dark', theme === 'dark');
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const themeIcon = document.getElementById('theme-icon');
+    if (themeToggleBtn && themeIcon) {
+        if (theme === 'dark') {
+            themeIcon.textContent = '☀️';
+            themeToggleBtn.querySelector('span:last-child').textContent = document.documentElement.lang === 'en' ? 'Light' : 'Sáng';
+        } else {
+            themeIcon.textContent = '🌙';
+            themeToggleBtn.querySelector('span:last-child').textContent = document.documentElement.lang === 'en' ? 'Dark' : 'Tối';
+        }
+    }
+    localStorage.setItem('portfolioTheme', theme);
+};
+
+const initThemeToggle = () => {
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    if (themeToggleBtn) {
+        themeToggleBtn.addEventListener('click', () => {
+            const currentTheme = document.body.classList.contains('dark') ? 'dark' : 'light';
+            const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            setTheme(nextTheme);
+        });
+    }
+    setTheme(getSavedTheme());
+};
+
 window.addEventListener('DOMContentLoaded', () => {
     initLanguageToggle();
+    initThemeToggle();
     initSmoothScroll();
     initLeafMotion();
     initShowMore();
