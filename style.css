@@ -16,7 +16,6 @@
     --border-dark: rgba(240, 246, 252, 0.1);
     --bg-gradient-dark: linear-gradient(135deg, #0d1117 0%, #161b22 50%, #0d1117 100%);
 }
-}
 
 .dark {
     --primary-green: var(--primary-green-dark);
