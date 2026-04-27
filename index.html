@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -7,6 +7,7 @@
     <title>Nguyễn Phúc Xuân Ngân | Portfolio</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet">
 </head>
 
 <body>
@@ -15,20 +16,19 @@
             <div class="logo">XANA</div>
             <div class="nav-right">
                 <ul>
-                    <li><a href="#about" data-vi="Về tôi" data-en="About">Về tôi</a></li>
-                    <li><a href="#projects" data-vi="Dự án" data-en="Projects">Dự án</a></li>
-                    <li><a href="#contact" data-vi="Liên hệ" data-en="Contact">Liên hệ</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#projects">Projects</a></li>
+                    <li><a href="#contact">Contact</a></li>
                 </ul>
-                <button id="lang-toggle" class="lang-toggle">EN</button>
-                <button id="theme-toggle" class="theme-toggle">
-                    <span id="theme-icon">🌙</span>
-                    <span data-vi="Tối" data-en="Dark">Tối</span>
-                </button>
             </div>
         </nav>
     </header>
 
-    <section class="hero reveal">
+    <section class="hero reveal sky-theme">
+        <div class="clouds">
+            <div class="cloud cloud-1">☁️</div>
+            <div class="cloud cloud-2">☁️</div>
+        </div>
         <div class="leaf-decoration left">🌿</div>
         <div class="leaf-decoration right">🍃</div>
         <div class="hero-card">
@@ -36,136 +36,136 @@
                 <span>X N</span>
             </div>
             <div class="hero-content">
-                <h1 data-vi="NGUYỄN PHÚC XUÂN NGÂN" data-en="NGUYEN PHUC XUAN NGAN">NGUYỄN PHÚC XUÂN NGÂN</h1>
-                <p class="subtitle" data-vi="Content Writer | Content, PR, Social"
-                    data-en="Content Writer | Content, PR, Social">Content Writer | Content, PR, Social</p>
-                <p class="intro-text"
-                    data-vi="Với 2 năm kinh nghiệm tối ưu hóa nội dung thúc đẩy hành động của người dùng."
-                    data-en="With 2 years of experience optimizing content to drive user action.">Với 2 năm kinh nghiệm
-                    tối ưu hóa nội dung thúc đẩy hành động của người dùng.</p>
+                <h1>NGUYEN PHUC XUAN NGAN</h1>
+                <p class="subtitle">Content Writer | Content, PR, Social</p>
+                <p class="intro-text">With 2 years of experience optimizing content to drive user action.</p>
             </div>
         </div>
     </section>
 
-    <section id="about" class="about reveal">
-        <h2 data-vi="Giới thiệu" data-en="About">Giới thiệu</h2>
+    <div class="branch-divider">🌳</div>
+
+    <section id="about" class="about reveal nature-bg">
+        <h2>About</h2>
         <div class="about-grid">
             <div class="about-text">
-                <p data-vi="Tôi tin rằng sức mạnh của nội dung nằm ở sự cân bằng: đủ đương đại để dẫn đầu xu hướng nhưng vẫn bám sát giá trị cốt lõi của thương hiệu."
-                    data-en="I believe the power of content lies in balance: modern enough to lead trends while staying true to brand values.">
-                    Tôi tin rằng sức mạnh của nội dung nằm ở sự cân bằng: đủ đương đại để dẫn đầu xu hướng nhưng vẫn bám
-                    sát giá trị cốt lõi của thương hiệu.</p>
+                <p>I believe the power of content lies in balance: modern enough to lead trends while staying true to
+                    brand values.</p>
                 <div class="skills-grid">
-                    <span data-vi="PR & Brand Storytelling" data-en="PR & Brand Storytelling">PR & Brand
-                        Storytelling</span>
-                    <span data-vi="Multi-platform Scriptwriting" data-en="Multi-platform Scriptwriting">Multi-platform
-                        Scriptwriting</span>
-                    <span data-vi="Social Copywriting" data-en="Social Copywriting">Social Copywriting</span>
-                    <span data-vi="Strategic Content Framework" data-en="Strategic Content Framework">Strategic Content
-                        Framework</span>
+                    <div class="skill-item">
+                        <img src="icons/pr-story.png" alt="PR Icon" class="skill-icon">
+                        <span>PR & Brand Storytelling</span>
+                    </div>
+                    <div class="skill-item">
+                        <img src="icons/script.png" alt="Script Icon" class="skill-icon">
+                        <span>Multi-platform Scriptwriting</span>
+                    </div>
+                    <div class="skill-item">
+                        <img src="icons/social.png" alt="Social Icon" class="skill-icon">
+                        <span>Social Copywriting</span>
+                    </div>
+                    <div class="skill-item">
+                        <img src="icons/strategy.png" alt="Strategy Icon" class="skill-icon">
+                        <span>Strategic Content Framework</span>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
+    <div class="branch-divider reverse">🌿</div>
+
     <section id="projects" class="projects reveal">
-        <h2 data-vi="Dự án nổi bật" data-en="Featured Projects">Dự án nổi bật</h2>
+        <h2>Featured Projects</h2>
         <div class="project-list">
-            <a href="project-mb-bank.html" class="project-card">
+            <a href="project-mb-bank.html" class="project-card" target="_blank">
                 <div class="project-thumb project-thumb-1" aria-hidden="true"><span>MB</span></div>
                 <div class="project-info">
-                    <h3 data-vi="Cây “Yêu Nước” MB" data-en="MB “Country Love” Campaign">Cây “Yêu Nước” MB</h3>
-                    <p data-vi="Chiến dịch CSR đạt hơn 3,000,000 tương tác số."
-                        data-en="CSR campaign reaching over 3,000,000 interactions.">Chiến dịch CSR đạt hơn 3,000,000
-                        tương tác số.</p>
-                    <span class="view-more" data-vi="Xem chi tiết →" data-en="View details →">Xem chi tiết →</span>
+                    <h3>MB “Country Love” Campaign</h3>
+                    <p>CSR campaign reaching over 3,000,000 interactions.</p>
+                    <span class="view-more">View details →</span>
                 </div>
             </a>
 
-            <a href="project-vietinbank.html" class="project-card">
+            <a href="project-vietinbank.html" class="project-card" target="_blank">
                 <div class="project-thumb project-thumb-2" aria-hidden="true"><span>VB</span></div>
                 <div class="project-info">
-                    <h3 data-vi="VietinBank Gold & Jewellery" data-en="VietinBank Gold & Jewellery">VietinBank Gold &
-                        Jewellery</h3>
-                    <p data-vi="Chiến dịch Tết Ất Tỵ 2025 - Ra mắt bộ sưu tập quà tặng."
-                        data-en="Tet 2025 campaign launching a premium gift collection.">Chiến dịch Tết Ất Tỵ 2025 - Ra
-                        mắt bộ sưu tập quà tặng.</p>
-                    <span class="view-more" data-vi="Xem chi tiết →" data-en="View details →">Xem chi tiết →</span>
+                    <h3>VietinBank Gold & Jewellery</h3>
+                    <p>Tet 2025 campaign launching a premium gift collection.</p>
+                    <span class="view-more">View details →</span>
                 </div>
             </a>
 
-            <a href="project-ponnie-party.html" class="project-card">
+            <a href="project-ponnie-party.html" class="project-card" target="_blank">
                 <div class="project-thumb project-thumb-3" aria-hidden="true"><span>PP</span></div>
                 <div class="project-info">
-                    <h3 data-vi="PÖNNIE PARTY" data-en="PÖNNIE PARTY">PÖNNIE PARTY</h3>
-                    <p data-vi="Thứ 6 lên tiệc “sáusage” - Video viral với Macro KOL."
-                        data-en="Weekend party concept with viral video and macro KOL.">Thứ 6 lên tiệc “sáusage” - Video
-                        viral với Macro KOL.</p>
-                    <span class="view-more" data-vi="Xem chi tiết →" data-en="View details →">Xem chi tiết →</span>
+                    <h3>PÖNNIE PARTY</h3>
+                    <p>Weekend party concept with viral video and macro KOL.</p>
+                    <span class="view-more">View details →</span>
                 </div>
             </a>
 
-            <a href="project-nam-ngu.html" class="project-card">
+            <a href="project-nam-ngu.html" class="project-card" target="_blank">
                 <div class="project-thumb project-thumb-4" aria-hidden="true"><span>NN</span></div>
                 <div class="project-info">
-                    <h3 data-vi="Nam Ngư Phú Quốc" data-en="Nam Ngu Phu Quoc">Nam Ngư Phú Quốc</h3>
-                    <p data-vi="Launch sản phẩm mới đạt hơn 7,000,000 lượt xem."
-                        data-en="New product launch reached over 7,000,000 views.">Launch sản phẩm mới đạt hơn 7,000,000
-                        lượt xem.</p>
-                    <span class="view-more" data-vi="Xem chi tiết →" data-en="View details →">Xem chi tiết →</span>
+                    <h3>Nam Ngu Phu Quoc</h3>
+                    <p>New product launch reached over 7,000,000 views.</p>
+                    <span class="view-more">View details →</span>
                 </div>
             </a>
 
-            <a href="project-oliv-series.html" class="project-card hidden">
+            <a href="project-oliv-series.html" class="project-card hidden" target="_blank">
                 <div class="project-thumb project-thumb-5" aria-hidden="true"><span>OL</span></div>
                 <div class="project-info">
-                    <h3 data-vi="Ôliv Series" data-en="Ôliv Series">Ôliv Series</h3>
-                    <p data-vi="Series sản phẩm dầu ô liu tự nhiên (08.03.2025 - 20.04.2026)."
-                        data-en="Natural olive oil product series (08.03.2025 - 20.04.2026).">Series sản phẩm dầu ô liu
-                        tự nhiên (08.03.2025 - 20.04.2026).</p>
-                    <span class="view-more" data-vi="Xem chi tiết →" data-en="View details →">Xem chi tiết →</span>
+                    <h3>Ôliv Series</h3>
+                    <p>Natural olive oil product series (2025 - 2026).</p>
+                    <span class="view-more">View details →</span>
                 </div>
             </a>
 
-            <a href="project-purite-series.html" class="project-card hidden">
+            <a href="project-purite-series.html" class="project-card hidden" target="_blank">
                 <div class="project-thumb project-thumb-6" aria-hidden="true"><span>PU</span></div>
                 <div class="project-info">
-                    <h3 data-vi="Purité Series" data-en="Purité Series">Purité Series</h3>
-                    <p data-vi="Series sản phẩm tinh khiết bền vững (20.10.2024 - 08.03.2026)."
-                        data-en="Sustainable purity product series (20.10.2024 - 08.03.2026).">Series sản phẩm tinh
-                        khiết bền vững (20.10.2024 - 08.03.2026).</p>
-                    <span class="view-more" data-vi="Xem chi tiết →" data-en="View details →">Xem chi tiết →</span>
+                    <h3>Purité Series</h3>
+                    <p>Sustainable purity product series (2024 - 2026).</p>
+                    <span class="view-more">View details →</span>
                 </div>
             </a>
 
-            <a href="project-zott-2025.html" class="project-card hidden">
+            <a href="project-zott-2025.html" class="project-card hidden" target="_blank">
                 <div class="project-thumb project-thumb-7" aria-hidden="true"><span>ZT</span></div>
                 <div class="project-info">
-                    <h3 data-vi="ZOTT Full Year 2025" data-en="ZOTT Full Year 2025">ZOTT Full Year 2025</h3>
-                    <p data-vi="Chiến dịch toàn diện cho thương hiệu ZOTT năm 2025."
-                        data-en="Comprehensive campaign for ZOTT brand in 2025.">Chiến dịch toàn diện cho thương hiệu
-                        ZOTT năm 2025.</p>
-                    <span class="view-more" data-vi="Xem chi tiết →" data-en="View details →">Xem chi tiết →</span>
+                    <h3>ZOTT Full Year 2025</h3>
+                    <p>Comprehensive campaign for ZOTT brand in 2025.</p>
+                    <span class="view-more">View details →</span>
                 </div>
             </a>
         </div>
 
         <div class="show-more-container">
-            <button id="show-more-btn" class="show-more-btn" data-vi="Xem thêm dự án" data-en="Show more projects">Xem
-                thêm dự án</button>
+            <button id="show-more-btn" class="show-more-btn">Show more projects</button>
         </div>
     </section>
 
     <footer id="contact" class="footer reveal">
         <div class="footer-content">
-            <h2 data-vi="Hãy kết nối cùng Ngân!" data-en="Let's connect!">Hãy kết nối cùng Ngân!</h2>
-            <p data-vi="Email: xuanganxn@gmail.com" data-en="Email: xuanganxn@gmail.com">Email: xuanganxn@gmail.com</p>
-            <p data-vi="SĐT: (+84) 328-818-165" data-en="Phone: (+84) 328-818-165">SĐT: (+84) 328-818-165</p>
-            <div class="social-links">
-                <a href="https://linkedin.com/in/xuanganxn/" data-vi="LinkedIn" data-en="LinkedIn">LinkedIn</a>
-            </div>
+            <h2>Let's connect!</h2>
+            <p>Email: xuanganxn@gmail.com</p>
+            <p>Phone: (+84) 328-818-165</p>
         </div>
+
+        <div class="contact__social grid">
+            <a href="https://www.facebook.com/xuanganxn/" target="_blank" class="contact__social-link"><i
+                    class="ri-facebook-circle-fill"></i><span>Facebook</span></a>
+            <a href="" target="_blank" class="contact__social-link"><i
+                    class="ri-instagram-line"></i><span>Instagram</span></a>
+            <a href="https://www.linkedin.com/in/xuanganxn/" target="_blank" class="contact__social-link"><i
+                    class="ri-linkedin-box-fill"></i><span>LinkedIn</span></a>
+        </div>
+
     </footer>
+
+
 
     <script src="script.js"></script>
 </body>
