@@ -262,10 +262,13 @@ h2 {
     font-weight: 700;
 }
 .footer {
-    background: var(--primary-green);
+    background: linear-gradient(180deg, var(--accent-green) 0%, var(--primary-green) 100%);
     color: var(--white);
     text-align: center;
     position: relative;
+    margin-top: 4rem;
+    box-shadow: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .footer::before {
@@ -296,11 +299,17 @@ h2 {
     align-items: center;
     gap: 0.5rem;
     font-size: 1.1rem;
-    transition: opacity 0.3s;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.6rem 1.4rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .contact__social-link:hover {
-    opacity: 0.8;
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateY(-5px);
+    opacity: 1;
 }
 
 .detail-container {
