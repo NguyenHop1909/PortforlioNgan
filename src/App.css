@@ -13,7 +13,6 @@
   --border-light: #E5E7E4;
 }
 
-/* SMOOTH SCROLL FOR ENTIRE PAGE */
 html {
   scroll-behavior: smooth;
 }
@@ -31,9 +30,9 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1.2rem 8%;
+  padding: 1rem 8%;
   border-bottom: 1px solid var(--border-light);
-  background: rgba(250, 249, 246, 0.92);
+  background: rgba(250, 249, 246, 0.95);
   position: sticky;
   top: 0;
   z-index: 50;
@@ -42,16 +41,16 @@ body {
 
 .nav-logo {
   font-family: var(--font-serif);
-  font-size: 1.3rem;
+  font-size: 1.25rem;
   font-weight: 600;
   color: var(--color-primary);
 }
 
 .nav-links a {
-  margin-left: 1.5rem;
+  margin-left: 1.2rem;
   text-decoration: none;
   color: var(--color-text);
-  font-size: 0.88rem;
+  font-size: 0.85rem;
   font-weight: 500;
   transition: color 0.2s;
 }
@@ -62,14 +61,16 @@ body {
 
 /* HERO SECTION & AVATAR */
 .hero-section {
-  padding: 4rem 6% 3rem;
+  padding: 3.5rem 6% 2.5rem;
   max-width: 850px;
   margin: 0 auto;
   text-align: center;
 }
 
 .avatar-wrapper {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.2rem;
+  display: flex;
+  justify-content: center;
 }
 
 .user-avatar {
@@ -88,7 +89,7 @@ body {
 
 .hero-badge {
   font-size: 0.72rem;
-  letter-spacing: 1.5px;
+  letter-spacing: 1.2px;
   text-transform: uppercase;
   color: var(--color-accent);
   font-weight: 700;
@@ -100,7 +101,7 @@ body {
 
 .hero-title {
   font-family: var(--font-serif);
-  font-size: 2.8rem;
+  font-size: 2.6rem;
   color: var(--color-primary);
   margin: 1.2rem 0 0.4rem;
   letter-spacing: -0.5px;
@@ -117,7 +118,7 @@ body {
 .hero-quote {
   font-family: var(--font-serif);
   font-style: italic;
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   line-height: 1.7;
   color: var(--color-primary);
   border-left: 3px solid var(--color-accent);
@@ -127,7 +128,7 @@ body {
   max-width: 750px;
 }
 
-/* SECTIONS */
+/* CONTAINER SECTIONS */
 .section-container {
   padding: 3.5rem 6%;
   max-width: 1050px;
@@ -144,6 +145,13 @@ body {
   font-size: 1.8rem;
   color: var(--color-primary);
   margin-bottom: 1.2rem;
+}
+
+.section-subtext {
+  font-size: 0.88rem;
+  color: var(--color-muted);
+  display: block;
+  margin-bottom: 1.5rem;
 }
 
 /* EDITORIAL GRID */
@@ -230,7 +238,6 @@ body {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1.5rem;
-  margin-top: 1.5rem;
 }
 
 .work-item {
@@ -323,7 +330,7 @@ body {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(28, 36, 30, 0.65);
+  background: rgba(28, 36, 30, 0.7);
   backdrop-filter: blur(5px);
   display: flex;
   align-items: center;
@@ -342,20 +349,20 @@ body {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.25);
 }
 
 .sticky-close-btn {
   position: absolute;
   top: 14px;
   right: 14px;
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   background: #E8EFE9;
   color: var(--color-primary);
   border: none;
-  font-size: 1.3rem;
+  font-size: 1.4rem;
   font-weight: bold;
   cursor: pointer;
   display: flex;
@@ -370,9 +377,9 @@ body {
 }
 
 .modal-scroll-body {
-  padding: 2rem 1.5rem;
+  padding: 2rem 1.6rem;
   overflow-y: auto;
-  -webkit-overflow-scrolling: touch; /* Mượt mà trên iOS */
+  -webkit-overflow-scrolling: touch; /* Giúp lướt mượt trên iPhone */
 }
 
 .modal-headline {
@@ -380,6 +387,13 @@ body {
   font-size: 1.5rem;
   color: var(--color-primary);
   margin: 0.4rem 0;
+}
+
+.modal-hashtags {
+  font-size: 0.8rem;
+  color: var(--color-accent);
+  font-weight: 500;
+  margin-top: 0.4rem;
 }
 
 .divider {
@@ -400,6 +414,18 @@ body {
   letter-spacing: 0.5px;
 }
 
+.modal-section ul {
+  padding-left: 1.2rem;
+  margin: 0;
+}
+
+.modal-section li {
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: var(--color-text);
+  margin-bottom: 0.3rem;
+}
+
 .highlight-impact {
   background: #F2F7F3;
   padding: 1rem;
@@ -411,6 +437,7 @@ body {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
+  margin-top: 0.5rem;
 }
 
 .link-pills a {
@@ -423,36 +450,42 @@ body {
   font-weight: 500;
 }
 
-/* 📱 MOBILE RESPONSIVE OPTIMIZATIONS */
+/* 📱 TỐI ƯU GIAO DIỆN ĐIỆN THOẠI (MOBILE OPTIMIZATIONS) */
 @media (max-width: 768px) {
   .nav-bar {
-    padding: 1rem 5%;
+    padding: 0.8rem 4%;
+  }
+
+  .nav-logo {
+    font-size: 1.1rem;
   }
 
   .nav-links a {
-    margin-left: 0.8rem;
-    font-size: 0.8rem;
+    margin-left: 0.6rem;
+    font-size: 0.78rem;
   }
 
   .hero-section {
-    padding: 2.5rem 5% 2rem;
+    padding: 2.2rem 4% 1.8rem;
   }
 
   .user-avatar {
-    width: 100px;
-    height: 100px;
+    width: 95px;
+    height: 95px;
   }
 
   .hero-title {
-    font-size: 2rem;
+    font-size: 1.8rem;
   }
 
   .hero-subtitle {
-    font-size: 0.95rem;
+    font-size: 0.9rem;
+    margin-bottom: 1.2rem;
   }
 
   .hero-quote {
-    font-size: 1rem;
+    font-size: 0.95rem;
+    padding-left: 0.8rem;
   }
 
   .editorial-grid {
@@ -461,11 +494,16 @@ body {
   }
 
   .section-container {
-    padding: 2.5rem 5%;
+    padding: 2.2rem 4%;
   }
 
   .works-list {
     grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .work-item {
+    padding: 1.3rem;
   }
 
   .footer-links {
@@ -474,30 +512,14 @@ body {
   }
 
   .modal-container {
-    max-height: 90vh;
+    max-height: 88vh;
   }
 
   .modal-scroll-body {
-    padding: 1.5rem 1.2rem;
+    padding: 1.4rem 1.1rem;
   }
-}
 
-.avatar-wrapper {
-  margin-bottom: 1.2rem;
-  display: flex;
-  justify-content: center;
-}
-
-.user-avatar {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 4px solid #FFFFFF;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08), 0 0 0 2px #3A5A40; /* Viền rêu bo ngoài cực sang */
-  transition: transform 0.3s ease;
-}
-
-.user-avatar:hover {
-  transform: scale(1.05);
+  .modal-headline {
+    font-size: 1.3rem;
+  }
 }

@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import './App.css';
 
-
+// 💡 NÍ THAY LINK ẢNH ĐẠI DIỆN CỦA BẠN VÀO ĐÂY NHÉ:
 const AVATAR_URL = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=600";
+
 const PORTFOLIO_DATA = {
     personalInfo: {
         name: "NGUYỄN PHÚC XUÂN NGÂN",
         nickname: "XANA",
-        role: "Content Writer | Content, PR, Social",
+        role: "Content Writer | PR & Social Storyteller",
         email: "xuanganxn@gmail.com",
         phone: "(+84) 328-818-165",
         linkedin: "https://linkedin.com/in/xuanganxn/",
@@ -16,10 +17,10 @@ const PORTFOLIO_DATA = {
         fields: ["F&B", "Technology", "Lifestyle", "Beauty", "Healthcare"]
     },
     skills: [
-        { name: "PR & Brand", desc: "Multi-platform & Social storytelling" },
-        { name: "Storytelling", desc: "Scriptwriting, Copywriting & Engagement" },
-        { name: "Integrated Content", desc: "Strategic Framework & Channel Management" },
-        { name: "Visual Direction", desc: "Content Framework, Operations & Management" }
+        { name: "PR & Brand Communications", desc: "Multi-platform & Social storytelling" },
+        { name: "Creative Storytelling", desc: "Scriptwriting, Copywriting & Engagement" },
+        { name: "Integrated Content Strategy", desc: "Strategic Framework & Channel Management" },
+        { name: "Visual & Content Direction", desc: "Content Framework, Operations & Management" }
     ],
     projects: [
         {
@@ -28,7 +29,7 @@ const PORTFOLIO_DATA = {
             client: "MBBank",
             category: "PR & CSR Strategy",
             summary: "A nationwide CSR initiative building brand prestige through small, impactful actions and authentic experiences.",
-            role: "Led the PR direction for the campaign, defining both visual and editorial strategies while executing tailored press articles and in-depth CSR analysis to amplify social impact.",
+            role: "Led the PR direction for the campaign, defining both visual and editorial strategies while executing tailored press articles and in-depth CSR analysis to amplify social impact.Led the PR direction for the campaign, defining both visual and editorial strategies while executing tailored press articles and in-depth CSR analysis to amplify social impact.Led the PR direction for the campaign, defining both visual and editorial strategies while executing tailored press articles and in-depth CSR analysis to amplify social impact.Led the PR direction for the campaign, defining both visual and editorial strategies while executing tailored press articles and in-depth CSR analysis to amplify social impact.Led the PR direction for the campaign, defining both visual and editorial strategies while executing tailored press articles and in-depth CSR analysis to amplify social impact.",
             outcomes: [
                 "5 lead articles (including content & visual direction)",
                 "15 sub-articles (executed based on editorial direction)",
@@ -57,7 +58,7 @@ const PORTFOLIO_DATA = {
                 "Brand-owned channel posts",
                 "Brand-partnership campaign posts"
             ],
-            results: "Achieved over 35,000,000 total engagements and nearly 30,000,000 website clicks, effectively driving high-intent traffic and optimizing the conversion funnel.",
+            results: "Achieved over 35,000,000 total engagements and nearly 30,000,000 website clicks, effectively driving high-intent traffic.",
             links: [
                 { name: "VNExpress", url: "https://vnexpress.net/vietinbank-gold-jewellery-ra-mat-tang-pham-linh-vat-tet-at-ty-4835968.html" },
                 { name: "CafeF", url: "https://cafef.vn/tuyet-tac-qua-tang-phuc-loc-va-giai-phap-dac-quyen-cho-doanh-nghiep-dip-tet-at-ty-188250104114958886.chn" }
@@ -70,7 +71,7 @@ const PORTFOLIO_DATA = {
             client: "PÖNNIE PARTY",
             category: "KOL & Social Campaign",
             summary: "Positioning Pönnie as a trendy, must-have snack for home social gatherings.",
-            role: "Participated in developing creative scripts for Macro KOLs (Linda Ngo) while managing visual direction and copy for community pages to amplify video content and editorial pillars.",
+            role: "Participated in developing creative scripts for Macro KOLs (Linda Ngo) while managing visual direction and copy for community pages to amplify video content.",
             outcomes: [
                 "Video scripts for Macro KOLs",
                 "Video scripts & content for amplified communities",
@@ -81,7 +82,7 @@ const PORTFOLIO_DATA = {
             links: [
                 { name: "TikTok Linda Ngo", url: "https://www.tiktok.com/@heyiamlinda/video/7554369700667378962" }
             ],
-            hashtags: "#SausageParty #Thu6LenTiecSausage #Ponnie #XucXichVong #NgonGionMong"
+            hashtags: "#SausageParty #Thu6LenTiecSausage #Ponnie #XucXichVong"
         },
         {
             id: "nam-ngu-phu-quoc",
@@ -108,7 +109,7 @@ const PORTFOLIO_DATA = {
             client: "Ôliv Natural Nourish",
             category: "Always-on & Minigame",
             summary: "Multi-quarter campaign boosting sales for core hair and body care categories.",
-            role: "Developed the strategic content framework and managed KOL/KOC script execution, while leading end-to-end minigame activations (visuals, copy, and T&Cs).",
+            role: "Developed strategic content framework and managed KOL/KOC script execution, while leading end-to-end minigame activations (visuals, copy, T&Cs).",
             outcomes: [
                 "Video scripts for KOLs / KOCs",
                 "KOL / KOC Briefs",
@@ -126,13 +127,13 @@ const PORTFOLIO_DATA = {
             client: "Purité de Prövence",
             category: "Integrated Campaign",
             summary: "Promoting body wash, hair care, and deodorant lines across festive seasons.",
-            role: "Led end-to-end campaign execution from Q4/2024 to Q1/2026, developing integrated Content Houses, Creative Devices, and tailored scripts for a wide spectrum of KOLs.",
+            role: "Led end-to-end campaign execution from Q4/2024 to Q1/2026, developing Content Houses, Creative Devices, and tailored scripts for a wide spectrum of KOLs.",
             outcomes: [
                 "Video scripts for KOLs (Macro to Nano)",
                 "Content House & Creative Devices Framework",
                 "KOL / KOC Briefs"
             ],
-            results: "Successfully elevated brand sentiment and boosted sales, delivering over 1,000,000 total engagements per seasonal campaign.",
+            results: "Successfully elevated brand sentiment, delivering over 1,000,000 total engagements per seasonal campaign.",
             links: [
                 { name: "TikTok Official Purité", url: "https://www.tiktok.com/@purite_official" }
             ],
@@ -144,7 +145,7 @@ const PORTFOLIO_DATA = {
             client: "ZOTT VIETNAM (Monte)",
             category: "Social & Community",
             summary: "Strengthening the emotional bond between Monte and its target audience.",
-            role: "Managed full-year content execution, developing high-retention hooks for KOL/KOC networks while leading visual and editorial direction for community posts and the Monte fanpage.",
+            role: "Managed full-year content execution, developing high-retention hooks for KOL/KOC networks while leading visual and editorial direction for community posts.",
             outcomes: [
                 "Video scripts for KOLs (Macro / Micro / Nano)",
                 "Captions & Designed visuals for Community groups",
@@ -162,7 +163,7 @@ const PORTFOLIO_DATA = {
             client: "THE A LIST Agency",
             category: "Employer Branding & Social",
             summary: "Building brand awareness and establishing employer brand authority.",
-            role: "Partnered with Copywriters to develop monthly frameworks, executing scripts, captions, and visual directions across Facebook, LinkedIn, and Instagram, while managing overall channel performance.",
+            role: "Partnered with Copywriters to develop monthly frameworks, executing scripts, captions, and visual directions across Facebook, LinkedIn, and Instagram.",
             outcomes: [
                 "Monthly content frameworks",
                 "Video scripts & Video editing",
@@ -185,24 +186,23 @@ export default function App() {
 
     return (
         <div className="content-portfolio">
-            {/* NAVIGATION */}
+            {/* NAVIGATION BAR */}
             <nav className="nav-bar">
                 <div className="nav-logo">{PORTFOLIO_DATA.personalInfo.nickname} ✦</div>
                 <div className="nav-links">
                     <a href="#about">About</a>
                     <a href="#expertise">Expertise</a>
-                    <a href="#works">Selected Works</a>
+                    <a href="#works">Works</a>
                     <a href="#contact">Contact</a>
                 </div>
             </nav>
 
             {/* HERO SECTION WITH AVATAR */}
             <header className="hero-section">
-                {/* KHU VỰC ẢNH ĐẠI DIỆN */}
                 <div className="avatar-wrapper">
                     <img
-                        src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=600"
-                        alt="Avatar"
+                        src={AVATAR_URL}
+                        alt={PORTFOLIO_DATA.personalInfo.name}
                         className="user-avatar"
                     />
                 </div>
@@ -216,7 +216,7 @@ export default function App() {
                 </blockquote>
             </header>
 
-            {/* ABOUT & STATS */}
+            {/* ABOUT & OVERVIEW */}
             <section id="about" className="section-container">
                 <div className="editorial-grid">
                     <div className="editorial-col">
@@ -229,12 +229,12 @@ export default function App() {
                     </div>
                     <div className="editorial-col highlight-box">
                         <span className="stat-number">3,600+</span>
-                        <p className="stat-label">Successful Deliverables & Project Outcomes Across 2+ Years</p>
+                        <p className="stat-label">Successful Deliverables & Outcomes Delivered Over 2+ Years</p>
                     </div>
                 </div>
             </section>
 
-            {/* EXPERTISE */}
+            {/* CORE EXPERTISE */}
             <section id="expertise" className="section-container bg-light">
                 <h2 className="section-heading">Core Expertise</h2>
                 <div className="expertise-grid">
@@ -248,7 +248,7 @@ export default function App() {
                 </div>
             </section>
 
-            {/* SELECTED WORKS */}
+            {/* FEATURED WORKS / CASE STUDIES */}
             <section id="works" className="section-container">
                 <div className="section-header">
                     <h2 className="section-heading">Featured Works</h2>
@@ -274,7 +274,7 @@ export default function App() {
                 </div>
             </section>
 
-            {/* FOOTER / CONTACT */}
+            {/* FOOTER & CONTACT */}
             <footer id="contact" className="footer-section">
                 <h2>Let's Craft Meaningful Stories Together</h2>
                 <p>Available for freelance projects, content strategy, and creative collaborations.</p>
@@ -285,21 +285,25 @@ export default function App() {
                 </div>
             </footer>
 
-            {/* POPUP MODAL (Sticky Close Button) */}
+            {/* POPUP MODAL DETAILED CASE STUDY */}
             {selectedProject && (
                 <div className="modal-overlay" onClick={() => setSelectedProject(null)}>
                     <div className="modal-container" onClick={(e) => e.stopPropagation()}>
 
-                        {/* STICKY CLOSE BUTTON */}
+                        {/* NÚT ĐÓNG CỐ ĐỊNH */}
                         <button className="sticky-close-btn" onClick={() => setSelectedProject(null)}>
                             ×
                         </button>
 
-                        {/* SCROLLABLE BODY */}
+                        {/* NỘI DUNG SCROLL MƯỢT */}
                         <div className="modal-scroll-body">
                             <span className="work-category">{selectedProject.category}</span>
                             <h2 className="modal-headline">{selectedProject.title}</h2>
                             <p className="modal-client-name"><strong>Client:</strong> {selectedProject.client}</p>
+
+                            {selectedProject.hashtags && (
+                                <p className="modal-hashtags">{selectedProject.hashtags}</p>
+                            )}
 
                             <hr className="divider" />
 
