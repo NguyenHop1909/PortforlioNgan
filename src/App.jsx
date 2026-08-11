@@ -299,75 +299,81 @@ export default function App() {
         </div>
       </footer>
 
-      {/* POPUP MODAL (CASE STUDY DETAILS) */}
-      {selectedProject && (
-        <div className="modal-overlay" onClick={() => setSelectedProject(null)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <button className="modal-close-btn" onClick={() => setSelectedProject(null)}>×</button>
-            
-            <span className="category-tag">{selectedProject.category}</span>
-            <h3 className="modal-title">{selectedProject.title}</h3>
-            
-            <div className="modal-info-group">
-              <p><strong>Client / Brand:</strong> {selectedProject.client}</p>
-              {selectedProject.hashtags && <p><strong>Key Hashtags:</strong> {selectedProject.hashtags}</p>}
-            </div>
+{/* POPUP MODAL (CASE STUDY DETAILS) */}
+{selectedProject && (
+  <div className="modal-overlay" onClick={() => setSelectedProject(null)}>
+    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+      
+      {/* KHỐI HEADER ĐỨNG YÊN (CHỨA NÚT ĐÓNG X) */}
+      <div className="modal-header">
+        <button className="modal-close-btn" onClick={() => setSelectedProject(null)}>×</button>
+        <span className="category-tag">{selectedProject.category}</span>
+        <h3 className="modal-title">{selectedProject.title}</h3>
+      </div>
 
-            <div className="modal-description">
-              <h4 style={{ color: '#2e7d32', marginBottom: '0.4rem' }}>🎯 My Role:</h4>
-              <p style={{ marginBottom: '1rem' }}>{selectedProject.role}</p>
-
-              <h4 style={{ color: '#2e7d32', marginBottom: '0.4rem' }}>📦 Key Outcomes:</h4>
-              <ul style={{ paddingLeft: '1.2rem', marginBottom: '1rem' }}>
-                {selectedProject.outcomes.map((item, index) => (
-                  <li key={index}>{item}</li>
-                ))}
-              </ul>
-
-              <h4 style={{ color: '#2e7d32', marginBottom: '0.4rem' }}>📈 Overall Results & Impact:</h4>
-              <p style={{ background: '#f0f7f2', padding: '0.8rem', borderRadius: '8px', color: '#1b5e20', fontWeight: '500' }}>
-                {selectedProject.results}
-              </p>
-
-              {selectedProject.links && selectedProject.links.length > 0 && (
-                <div style={{ marginTop: '1.2rem' }}>
-                  <h4 style={{ color: '#2e7d32', marginBottom: '0.4rem' }}>🔗 Media & Reference Links:</h4>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-                    {selectedProject.links.map((link, idx) => (
-                      <a 
-                        key={idx} 
-                        href={link.url} 
-                        target="_blank" 
-                        rel="noreferrer"
-                        style={{
-                          fontSize: '0.85rem',
-                          background: '#e3f2fd',
-                          color: '#1565c0',
-                          padding: '4px 10px',
-                          borderRadius: '6px',
-                          textDecoration: 'none',
-                          fontWeight: '500'
-                        }}
-                      >
-                        {link.name} ↗
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            <div className="modal-actions" style={{ marginTop: '1.5rem' }}>
-              <button 
-                className="btn-primary-modal" 
-                onClick={() => setSelectedProject(null)}
-              >
-                Close Window
-              </button>
-            </div>
-          </div>
+      {/* KHỐI BODY CHỨA NỘI DUNG CUỘN */}
+      <div className="modal-body">
+        <div className="modal-info-group">
+          <p><strong>Client / Brand:</strong> {selectedProject.client}</p>
+          {selectedProject.hashtags && <p><strong>Key Hashtags:</strong> {selectedProject.hashtags}</p>}
         </div>
-      )}
+
+        <div className="modal-description">
+          <h4 style={{ color: '#2e7d32', marginBottom: '0.4rem' }}>🎯 My Role:</h4>
+          <p style={{ marginBottom: '1rem' }}>{selectedProject.role}</p>
+
+          <h4 style={{ color: '#2e7d32', marginBottom: '0.4rem' }}>📦 Key Outcomes:</h4>
+          <ul style={{ paddingLeft: '1.2rem', marginBottom: '1rem' }}>
+            {selectedProject.outcomes.map((item, index) => (
+              <li key={index}>{item}</li>
+            ))}
+          </ul>
+
+          <h4 style={{ color: '#2e7d32', marginBottom: '0.4rem' }}>📈 Overall Results & Impact:</h4>
+          <p style={{ background: '#f0f7f2', padding: '0.8rem', borderRadius: '8px', color: '#1b5e20', fontWeight: '500' }}>
+            {selectedProject.results}
+          </p>
+
+          {selectedProject.links && selectedProject.links.length > 0 && (
+            <div style={{ marginTop: '1.2rem' }}>
+              <h4 style={{ color: '#2e7d32', marginBottom: '0.4rem' }}>🔗 Media & Reference Links:</h4>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+                {selectedProject.links.map((link, idx) => (
+                  <a 
+                    key={idx} 
+                    href={link.url} 
+                    target="_blank" 
+                    rel="noreferrer"
+                    style={{
+                      fontSize: '0.85rem',
+                      background: '#e3f2fd',
+                      color: '#1565c0',
+                      padding: '4px 10px',
+                      borderRadius: '6px',
+                      textDecoration: 'none',
+                      fontWeight: '500'
+                    }}
+                  >
+                    {link.name} ↗
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="modal-actions" style={{ marginTop: '1.5rem' }}>
+          <button 
+            className="btn-primary-modal" 
+            onClick={() => setSelectedProject(null)}
+          >
+            Close Window
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
     </div>
   );
 }
