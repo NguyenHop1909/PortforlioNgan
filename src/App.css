@@ -33,6 +33,8 @@ body {
     overflow-x: hidden;
 }
 
+
+
 /* 2. HEADER & NAVIGATION */
 header {
     padding: 1.25rem 8%;
@@ -499,4 +501,5 @@ h2 {
     .modal-content {
         padding: 1.5rem;
     }
+
 }

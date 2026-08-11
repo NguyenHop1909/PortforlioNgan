@@ -200,6 +200,13 @@ export default function App() {
 
       {/* HERO SECTION */}
       <section className="sky-theme">
+        {/* CHÈN THẺ IMG BẦU TRỜI MÂY VÀO ĐÂY */}
+        <img 
+          src="/IMAGE/Cloudy_sky.jpg" 
+          alt="Cloudy Sky Background" 
+          className="hero-bg-image" 
+        />
+
         <div className="hero">
           <div className="leaf-decoration left">🌿</div>
           <div className="leaf-decoration right">🍃</div>
