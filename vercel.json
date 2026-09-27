@@ -1,4 +1,5 @@
 {
+  "functions": { "api/save-portfolio.js": { "maxDuration": 60 }, "api/admin-image.js": { "maxDuration": 60 } },
   "rewrites": [
     { "source": "/admin", "destination": "/index.html" },
     { "source": "/admin/", "destination": "/index.html" }

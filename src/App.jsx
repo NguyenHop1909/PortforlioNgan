@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import { PORTFOLIO_DATA as data } from './data/portfolio';
 import { CANVA_PORTFOLIO_URL } from './data/projectsData';
 import './App.css';
+import ImageEditor from './ImageEditor';
+import { imageStyle } from './media';
 
 const filters = ['All projects', 'Brand writing', 'Video scripts', 'Social content'];
 const STORAGE_KEY = 'xana-portfolio-content';
@@ -22,7 +24,8 @@ function cloneData(value) {
   return JSON.parse(JSON.stringify(value));
 }
 
-export function PortfolioEditor({ draft, setDraft, onSave, onClose, onReset, onPreview, saveState, saveError, remote = false }) {
+export function PortfolioEditor({ draft, setDraft, onSave, onClose, onReset, onPreview, saveState, saveError, saveProgress, remote = false }) {
+  const [imageBusy, setImageBusy] = useState(false);
   const dialogRef = useRef(null);
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -46,14 +49,15 @@ export function PortfolioEditor({ draft, setDraft, onSave, onClose, onReset, onP
   const updateList = (index, field, value) => updateProject(index, field, value.split('\n').map(item => item.trim()).filter(Boolean));
 
   return (
-    <dialog ref={dialogRef} className="editor-dialog" onCancel={event => { event.preventDefault(); onClose(); }} aria-labelledby="editor-title">
+    <dialog ref={dialogRef} className="editor-dialog" onCancel={event => { event.preventDefault(); if (!imageBusy) onClose(); }} aria-labelledby="editor-title">
       <div className="editor-header">
         <div><span className="eyebrow">WEBSITE EDITOR</span><h2 id="editor-title">Edit your portfolio</h2><p>{remote ? 'Chỉnh nội dung rồi bấm Save changes. Website sẽ cập nhật sau khi bản mới triển khai xong.' : 'Save changes writes src/data/portfolio.js and pushes your portfolio to GitHub.'}</p></div>
-        <button className="icon-button" onClick={onClose} disabled={saveState === 'saving'} aria-label="Close editor">×</button>
+        <button className="icon-button" onClick={onClose} disabled={saveState === 'saving' || imageBusy} aria-label="Close editor">×</button>
       </div>
-      <div className="editor-body">
+      <fieldset className="editor-body editor-content" disabled={saveState === 'saving' || imageBusy}>
         <section className="editor-section">
           <div className="editor-section-heading"><h3>Personal information</h3><span>About and contact</span></div>
+          <ImageEditor portrait images={draft.personalInfo.portrait ? [draft.personalInfo.portrait] : []} onChange={images => updatePersonal('portrait', images[0] || null)} onBusy={setImageBusy} />
           <div className="editor-fields">
             <label>Display name<input value={draft.personalInfo.name} onChange={event => updatePersonal('name', event.target.value)} /></label>
             <label>Nickname<input value={draft.personalInfo.nickname} onChange={event => updatePersonal('nickname', event.target.value)} /></label>
@@ -81,6 +85,8 @@ export function PortfolioEditor({ draft, setDraft, onSave, onClose, onReset, onP
           <div className="editor-section-heading"><h3>Projects</h3><span>Case studies</span></div>
           <div className="editor-stack">{draft.projects.map((project, index) => <article className="editor-item" key={project.id}>
             <div className="editor-item-title"><span>0{index + 1}</span><strong>{project.client}</strong></div>
+            <ImageEditor images={project.images || []} onChange={images => updateProject(index, 'images', images)} onBusy={setImageBusy} />
+            <label className="gallery-layout-control">Bố cục ảnh<select value={project.galleryLayout || 'grid'} onChange={event => updateProject(index, 'galleryLayout', event.target.value)}><option value="grid">Lưới hai cột</option><option value="stack">Ảnh lớn xếp dọc</option></select></label>
             <div className="editor-fields">
               <label>Project title<input value={project.title} onChange={event => updateProject(index, 'title', event.target.value)} /></label>
               <label>Client<input value={project.client} onChange={event => updateProject(index, 'client', event.target.value)} /></label>
@@ -93,8 +99,8 @@ export function PortfolioEditor({ draft, setDraft, onSave, onClose, onReset, onP
             </div>
           </article>)}</div>
         </section>
-      </div>
-      <div className="editor-actions">{onPreview && <button className="button secondary" onClick={onPreview} disabled={saveState === 'saving'}>Xem trước</button>}<button className="text-link" onClick={onReset} disabled={saveState === 'saving'}>Reset saved changes</button><div>{saveState === 'error' && <span role="alert" className="save-status error">{saveError}</span>}{saveState === 'success' && <span role="status" className="save-status success">{remote ? 'Đã lưu. Website đang chờ triển khai bản mới.' : 'Saved to file and pushed to GitHub.'}</span>}<button className="button secondary" onClick={onClose} disabled={saveState === 'saving'}>Cancel</button><button className="button" onClick={onSave} disabled={saveState === 'saving'}>{saveState === 'saving' ? 'Saving & pushing…' : 'Save changes'} <Arrow /></button></div></div>
+      </fieldset>
+      <div className="editor-actions">{saveProgress && <span role="status">{saveProgress}</span>}{onPreview && <button className="button secondary" onClick={onPreview} disabled={saveState === 'saving' || imageBusy}>Xem trước</button>}<button className="text-link" onClick={onReset} disabled={saveState === 'saving' || imageBusy}>Reset saved changes</button><div>{saveState === 'error' && <span role="alert" className="save-status error">{saveError}</span>}{saveState === 'success' && <span role="status" className="save-status success">{remote ? 'Đã lưu. Website đang chờ triển khai bản mới.' : 'Saved to file and pushed to GitHub.'}</span>}<button className="button secondary" onClick={onClose} disabled={saveState === 'saving' || imageBusy}>Cancel</button><button className="button" onClick={onSave} disabled={saveState === 'saving' || imageBusy}>{saveState === 'saving' ? 'Saving & pushing…' : 'Save changes'} <Arrow /></button></div></div>
     </dialog>
   );
 }
@@ -121,7 +127,7 @@ function CaseStudy({ project, onClose }) {
         <span className="pill">{project.category}</span>
         <h2 id="case-title">{project.title}</h2>
         <p className="case-client">{project.client}</p>
-        {project.index !== 7 && <img className="case-image" src={`/work/${work[project.index].image}`} alt={`Portfolio reference for ${project.client}`} />}
+        {project.images?.length ? <div className={`project-gallery gallery-${project.galleryLayout || 'grid'}`}>{project.images.map((image, index) => <figure key={index}><a href={image.src} target="_blank" rel="noreferrer"><img src={image.src} alt={image.alt || project.title} style={imageStyle(image)} loading="lazy" /></a>{image.caption && <figcaption>{image.caption}</figcaption>}</figure>)}</div> : project.index !== 7 && <img className="case-image" src={`/work/${work[project.index].image}`} alt={`Portfolio reference for ${project.client}`} />}
         <h3>The brief</h3><p>{project.summary}</p>
         <h3>My contribution</h3><p>{project.role}</p>
         <h3>The deliverables</h3><ul>{project.outcomes.map(item => <li key={item}>{item}</li>)}</ul>
@@ -148,6 +154,7 @@ export default function App({ previewData = null }) {
     }
   });
   const [editorDraft, setEditorDraft] = useState(null);
+  const [previewing, setPreviewing] = useState(false);
   const portfolio = previewData || savedPortfolio;
   const [saveState, setSaveState] = useState('idle');
   const [saveError, setSaveError] = useState('');
@@ -190,6 +197,18 @@ export default function App({ previewData = null }) {
   };
   const resetEditor = () => setEditorDraft(cloneData(data));
 
+  if (!previewData && previewing && editorDraft) return <div className="portfolio-preview">
+    <section className="preview-toolbar" aria-label="Điều khiển bản xem trước">
+      <div><strong>Xem trước portfolio</strong><p>{saveState === 'success' ? 'Đã lưu và đẩy lên GitHub.' : 'Bản nháp — chưa lưu thay đổi.'}</p></div>
+      <div className="preview-buttons">
+        <button className="button secondary" onClick={() => setPreviewing(false)} disabled={saveState === 'saving'}>Quay lại chỉnh sửa</button>
+        <button className="button" onClick={saveEditor} disabled={saveState === 'saving'}>{saveState === 'saving' ? 'Đang lưu…' : 'Lưu thay đổi'}</button>
+      </div>
+      {saveState === 'error' && <p className="admin-error" role="alert">{saveError}</p>}
+    </section>
+    <App previewData={editorDraft} />
+  </div>;
+
   return (
     <>
       <a className="skip-link" href="#main">Skip to content</a>
@@ -214,7 +233,7 @@ export default function App({ previewData = null }) {
           </div>
           <div className="creator-scene">
             <div className="portrait-shape" />
-            <div className="portrait-card"><img src="/work/ngan.jpg" alt="Xuân Ngân sitting on the grass" fetchPriority="high" /><div className="portrait-caption"><span>Ngân, aka XANA</span><span aria-hidden="true">♡</span></div></div>
+            <div className="portrait-card"><img src={portfolio.personalInfo.portrait?.src || "/work/ngan.jpg"} style={portfolio.personalInfo.portrait ? imageStyle(portfolio.personalInfo.portrait) : undefined} alt={portfolio.personalInfo.portrait?.alt || "Xuân Ngân sitting on the grass"} fetchPriority="high" /><div className="portrait-caption"><span>          Ngân, aka XANA</span><span aria-hidden="true">♡</span></div></div>
             <div className="floating-tag tag-script"><span className="tag-icon">▷</span><div><strong>From brief to “play”</strong><small>Concepts + video scripts</small></div></div>
             <div className="floating-tag tag-copy"><span className="tag-icon">✎</span><div><strong>A good story starts here.</strong><small>One idea. The right words.</small></div></div>
             <span className="scene-spark" aria-hidden="true">✳</span><span className="scene-spark small-spark" aria-hidden="true">✦</span>
@@ -236,7 +255,7 @@ export default function App({ previewData = null }) {
                 <span className="project-brand">{project.client}</span>
                 <div className={`work-frame ${[0, 1].includes(project.index) ? 'article-frame' : 'video-frame'} ${project.index === 7 ? 'wide-frame' : ''}`}>
                   <div className="frame-top"><span /><span /><span /><small>{visual.tags.includes(2) ? 'creator’s corner' : 'brand stories'}</small></div>
-                  <img src={`/work/${visual.image}`} alt={project.index === 7 ? 'Creative workspace illustration' : `${project.client} campaign reference from Ngân’s portfolio`} loading="lazy" />
+                  <img src={project.images?.[0]?.src || `/work/${visual.image}`} style={project.images?.[0] ? imageStyle(project.images[0]) : undefined} alt={project.index === 7 ? 'Creative workspace illustration' : `${project.client} campaign reference from Ngân’s portfolio`} loading="lazy" />
                 </div>
                 {visual.tags.includes(2) && project.index !== 7 && <span className="play-badge" aria-hidden="true">▷</span>}
                 <span className="result-sticker">✦ {project.results}</span>
@@ -248,7 +267,7 @@ export default function App({ previewData = null }) {
           <div className="work-bottom"><span aria-live="polite">{visible.length} of {projects.length} projects</span>{projects.length > 4 && <button className="button secondary" onClick={() => setExpanded(!expanded)}>{expanded ? 'A little less' : 'There’s more where that came from'} <span aria-hidden="true">{expanded ? '−' : '+'}</span></button>}</div>
         </div></section>
         <section className="about-section shell" id="about">
-          <div className="about-photo"><img src="/work/ngan.jpg" alt="Meet Ngân, the writer behind XANA" loading="lazy" /><div className="about-photo-note">A curious mind,<br />a notes app full of ideas. <span aria-hidden="true">♡</span></div><span className="about-flower" aria-hidden="true">✳</span></div>
+          <div className="about-photo"><img src={portfolio.personalInfo.portrait?.src || "/work/ngan.jpg"} style={portfolio.personalInfo.portrait ? imageStyle(portfolio.personalInfo.portrait) : undefined} alt={portfolio.personalInfo.portrait?.alt || "Meet Ngân, the writer behind XANA"} loading="lazy" /><div className="about-photo-note">A curious mind,<br />a notes app full of ideas. <span aria-hidden="true">♡</span></div><span className="about-flower" aria-hidden="true">✳</span></div>
             <div className="about-copy"><span className="eyebrow">THE HUMAN BEHIND THE CONTENT</span><h2>Hi again.<br />You can call me <span>{portfolio.personalInfo.nickname}.</span></h2><p className="full-name">{portfolio.personalInfo.name} · {portfolio.personalInfo.role}</p><p>{portfolio.personalInfo.bio}</p><p>I enjoy finding the small human insight that turns a brand message into something people actually care about.</p><div className="industry-tags">{portfolio.personalInfo.fields.map(field => <span key={field}>{field}</span>)}</div><div className="stats-row"><div><strong>2+</strong><span>Years creating content</span></div><div><strong>3,600+</strong><span>Project outcomes delivered</span></div></div></div>
         </section>
         <section className="process-section shell"><span className="eyebrow">HOW WE CAN WORK TOGETHER</span><h2>Good content starts with <span>a good conversation.</span></h2><div className="process-grid">{[['Let’s talk', 'Your brand, your audience, and what you want to say.'], ['Find the idea', 'A clear direction, a fresh angle, and a concept that fits.'], ['Make it happen', 'Thoughtful writing, collaborative feedback, and content ready to go.']].map(([title, description], index) => <div key={title}><span className="step-number">0{index + 1}</span><h3>{title}</h3><p>{description}</p></div>)}</div></section>
@@ -256,7 +275,7 @@ export default function App({ previewData = null }) {
       </main>
       <footer className="footer shell"><a className="wordmark" href="#home">xana<span>✳</span></a><p>© {new Date().getFullYear()} {portfolio.personalInfo.name} · A little creativity, always.</p><div><a href={portfolio.personalInfo.linkedin} target="_blank" rel="noreferrer">LinkedIn <Arrow /></a><a href={`tel:${portfolio.personalInfo.phone.replace(/[^\d+]/g, '')}`}>Call me <Arrow /></a>{LOCAL_FILE_SAVE && !previewData && <button className="footer-edit" onClick={openEditor}>Edit <span aria-hidden="true">✎</span></button>}<a href="#home" aria-label="Back to top">↑</a></div></footer>
       {selectedProject && <CaseStudy project={selectedProject} onClose={() => setSelectedProject(null)} />}
-      {LOCAL_FILE_SAVE && !previewData && editorDraft && <PortfolioEditor draft={editorDraft} setDraft={setEditorDraft} onSave={saveEditor} onClose={closeEditor} onReset={resetEditor} saveState={saveState} saveError={saveError} />}
+      {LOCAL_FILE_SAVE && !previewData && editorDraft && <PortfolioEditor draft={editorDraft} setDraft={value => { setEditorDraft(value); setSaveState('idle'); }} onPreview={() => { setPreviewing(true); window.scrollTo(0, 0); }} onSave={saveEditor} onClose={closeEditor} onReset={resetEditor} saveState={saveState} saveError={saveError} />}
     </>
   );
 }

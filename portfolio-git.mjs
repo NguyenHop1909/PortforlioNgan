@@ -2,7 +2,7 @@ import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 
 const exec = promisify(execFile);
-export async function pushPortfolio(root, run = exec) {
+export async function pushPortfolio(root, run = exec, imageFiles = []) {
   const git = async (...args) => (await run('git', args, {
     cwd: root, timeout: 60000, windowsHide: true,
     env: { ...process.env, GIT_TERMINAL_PROMPT: '0', GCM_INTERACTIVE: 'Never' },
@@ -15,8 +15,11 @@ export async function pushPortfolio(root, run = exec) {
     throw new Error('Origin must point to NguyenHop1909/PortforlioNgan.');
   }
   const file = 'src/data/portfolio.js';
-  if (await git('status', '--porcelain', '--', file)) {
-    await git('commit', '--only', '-m', 'Update portfolio from local editor', '--', file);
+  if (!imageFiles.every(path => /^public\/uploads\/[a-f0-9]{64}\.webp$/.test(path))) throw new Error('Invalid image path');
+  const files = [file, ...new Set(imageFiles)];
+  if (imageFiles.length) await git('add', '--', ...files.slice(1));
+  if (await git('status', '--porcelain', '--', ...files)) {
+    await git('commit', '--only', '-m', 'Update portfolio from local editor', '--', ...files);
   }
   // Also retries a previous commit whose push failed. Never force-push.
   await git('push', 'origin', 'HEAD:refs/heads/main');

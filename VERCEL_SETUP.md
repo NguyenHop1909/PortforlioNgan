@@ -22,3 +22,11 @@ npm run dev retains the existing local editor. The deployed /admin flow requires
 References:
 - https://docs.github.com/en/rest/repos/contents#create-or-update-file-contents
 - https://vercel.com/docs/environment-variables
+
+## Photos and project artwork
+
+In the editor, choose a personal portrait or add up to 12 images per project. JPG, PNG and WebP inputs up to 20 MB are resized to at most 1800px and converted to WebP in the browser. If the optimized image exceeds the upload limit, choose a smaller image. You can reorder images, set captions/alt text, select contain/cover, focal height, background color, corner radius and grid/stack layout. The first project image is its cover.
+
+Preview uses the local draft. Save stages authenticated image blobs, then creates one Git commit containing the image files under public/uploads and src/data/portfolio.js. A signed receipt prevents substituting a different upload path or blob. The branch update is non-forced and rejects concurrent changes. No extra service or environment variables are required.
+
+Removing an image removes it from the portfolio. Existing files are retained in Git history/storage so old versions remain recoverable. An interrupted save may leave unreferenced blobs but does not publish partial content. Keep the editor open on errors and retry. New image URLs become publicly available after the deployment finishes.

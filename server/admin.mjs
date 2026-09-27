@@ -50,10 +50,13 @@ const webLink = value => {
 };
 export function validPortfolio(value) {
   return Boolean(value) && strings(value.personalInfo, ['name', 'nickname', 'role', 'email', 'phone', 'linkedin', 'bio']) &&
+    (!value.personalInfo.portrait || validImage(value.personalInfo.portrait)) &&
     webLink(value.personalInfo.linkedin) && stringList(value.personalInfo.fields) &&
     Array.isArray(value.services) && value.services.length === 3 && value.services.every(service =>
       strings(service, ['title', 'icon', 'desc']) && stringList(service.tags)) &&
     Array.isArray(value.projects) && value.projects.length === 8 && value.projects.every(project =>
+      (project.images === undefined || (Array.isArray(project.images) && project.images.length <= 12 && project.images.every(validImage))) &&
+      (project.galleryLayout === undefined || ['grid', 'stack'].includes(project.galleryLayout)) &&
       (typeof project.id === 'string' || typeof project.id === 'number') &&
       strings(project, ['title', 'client', 'category', 'summary', 'role', 'results']) &&
       stringList(project.outcomes) && Array.isArray(project.links) && project.links.every(link =>
@@ -69,4 +72,21 @@ export async function githubFile(method = 'GET', body) {
     headers: { Accept: 'application/vnd.github+json', Authorization: `Bearer ${process.env.GITHUB_TOKEN}`, 'X-GitHub-Api-Version': '2022-11-28', 'Content-Type': 'application/json' },
     ...(body ? { body: JSON.stringify({ ...body, branch }) } : {}),
   });
+}
+export function validImage(image) {
+  return image && typeof image.src === 'string' && /^\/uploads\/[a-f0-9]{64}\.webp$/.test(image.src) &&
+    typeof image.alt === 'string' && image.alt.length <= 500 && typeof image.caption === 'string' && image.caption.length <= 2000 &&
+    ['cover', 'contain'].includes(image.fit) && Number.isFinite(image.position) && image.position >= 0 && image.position <= 100 &&
+    Number.isFinite(image.radius) && image.radius >= 0 && image.radius <= 40 && /^#[a-f0-9]{6}$/i.test(image.background);
+}
+export async function githubRequest(path, method = 'GET', body) {
+  if (!process.env.GITHUB_TOKEN) throw new Error('GitHub is not configured');
+  const repo = process.env.GITHUB_REPOSITORY || 'NguyenHop1909/PortforlioNgan';
+  const response = await fetch(`https://api.github.com/repos/${repo}/${path}`, {
+    method, signal: AbortSignal.timeout(20000),
+    headers: { Accept: 'application/vnd.github+json', Authorization: `Bearer ${process.env.GITHUB_TOKEN}`, 'X-GitHub-Api-Version': '2022-11-28', 'Content-Type': 'application/json' },
+    ...(body ? { body: JSON.stringify(body) } : {}),
+  });
+  if (!response.ok) throw Object.assign(new Error('GitHub request failed. Check repository access or reload if content changed.'), { status: [409, 422].includes(response.status) ? 409 : 502 });
+  return response.json();
 }

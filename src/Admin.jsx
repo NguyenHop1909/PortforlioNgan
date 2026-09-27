@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import App, { PortfolioEditor } from './App';
+import { stageMedia } from './media';
 
 async function api(path, options) {
   const response = await fetch(path, { credentials: 'same-origin', ...options });
@@ -23,6 +24,7 @@ export default function Admin() {
   const [previewing, setPreviewing] = useState(false);
   const [saveState, setSaveState] = useState('idle');
   const [commitUrl, setCommitUrl] = useState('');
+  const [saveProgress, setSaveProgress] = useState('');
   useEffect(() => {
     document.title = 'Quản lý portfolio | XANA';
     api('/api/admin-session').then(result => setAuthenticated(result.authenticated))
@@ -51,16 +53,18 @@ export default function Admin() {
   async function save() {
     setSaveState('saving'); setError('');
     try {
+      const prepared = await stageMedia(draft, src => api('/api/admin-image', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ src }) }), setSaveProgress);
+      setSaveProgress('Đang lưu nội dung…');
       const result = await api('/api/save-portfolio', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ portfolio: draft, sha }),
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...prepared, sha }),
       });
       if (!result.ok || !result.sha) throw new Error('Chưa xác nhận được việc lưu. Vui lòng kiểm tra lại.');
-      setSha(result.sha); setOriginal(structuredClone(draft)); setCommitUrl(result.commitUrl);
+      setSha(result.sha); setOriginal(structuredClone(prepared.portfolio)); setCommitUrl(result.commitUrl);
       setSaveState('success');
     } catch (err) {
       setError(err.message); setSaveState('error');
       if (err.status === 401) { setAuthenticated(false); setEditing(false); setPreviewing(false); }
-    }
+    } finally { setSaveProgress(''); }
   }
   async function logout() {
     setBusy(true); setError('');
@@ -86,6 +90,7 @@ export default function Admin() {
         <button className="button secondary" onClick={returnToEditor} disabled={saveState === 'saving'}>Quay lại chỉnh sửa</button>
         <button className="button" onClick={save} disabled={saveState === 'saving' || saveState === 'success'}>{saveState === 'saving' ? 'Đang lưu…' : saveState === 'success' ? 'Đã lưu' : 'Lưu thay đổi'}</button>
       </div>
+      {saveProgress && <p role="status">{saveProgress}</p>}
       {error && <p className="admin-error" role="alert">{error}</p>}
     </section>
     <App previewData={draft} />
@@ -109,6 +114,6 @@ export default function Admin() {
     </section>
     {authenticated && editing && draft && <PortfolioEditor remote draft={draft} setDraft={value => { if (saveState !== 'saving') { setDraft(value); setSaveState('idle'); } }} onSave={save}
       onPreview={preview} onClose={() => { if (saveState !== 'saving') setEditing(false); }}
-      onReset={() => { setDraft(structuredClone(original)); setSaveState('idle'); }} saveState={saveState} saveError={error} />}
+      onReset={() => { setDraft(structuredClone(original)); setSaveState('idle'); }} saveState={saveState} saveError={error} saveProgress={saveProgress} />}
   </main>;
 }

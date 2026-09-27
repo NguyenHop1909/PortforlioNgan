@@ -1,6 +1,9 @@
-import { writeFile, rename, rm } from 'node:fs/promises';
+import { writeFile, rename, rm, mkdir } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { pushPortfolio } from './portfolio-git.mjs';
+import { decodeImage } from './server/media.mjs';
+import { validPortfolio } from './server/admin.mjs';
+import { mediaItems } from './src/media.js';
 
 export function localPortfolioSave() {
   return {
@@ -34,7 +37,7 @@ export function localPortfolioSave() {
           let size = 0;
           for await (const chunk of request) {
             size += chunk.length;
-            if (size > 1024 * 1024) return send(413, { error: 'Portfolio data is too large.' });
+            if (size > 32 * 1024 * 1024) return send(413, { error: 'Too many new images for one local save. Save smaller batches.' });
             chunks.push(chunk);
           }
           let portfolio;
@@ -43,10 +46,21 @@ export function localPortfolioSave() {
           if (!portfolio?.personalInfo || !Array.isArray(portfolio.projects) || !Array.isArray(portfolio.services)) {
             return send(400, { error: 'Portfolio data is missing required fields.' });
           }
+          const images = [];
+          for (const image of mediaItems(portfolio)) {
+            if (image.src.startsWith('data:')) {
+              const decoded = decodeImage(image.src);
+              images.push(decoded);
+              image.src = decoded.src;
+            }
+          }
+          if (!validPortfolio(portfolio)) return send(400, { error: 'Invalid portfolio or image settings.' });
+          if (images.length) await mkdir(resolve(server.config.root, 'public/uploads'), { recursive: true });
+          for (const image of images) await writeFile(resolve(server.config.root, `public${image.src}`), image.buffer);
           await writeFile(temporary, `export const PORTFOLIO_DATA = ${JSON.stringify(portfolio, null, 2)};\n`, 'utf8');
           await rename(temporary, target);
           try {
-            await pushPortfolio(server.config.root);
+            await pushPortfolio(server.config.root, undefined, mediaItems(portfolio).map(image => `public${image.src}`));
           } catch (error) {
             server.config.logger.error(`Portfolio push failed: ${error.message}`);
             return send(502, { savedLocally: true, error: 'Saved to src/data/portfolio.js, but GitHub push failed. Check Git sign-in, branch main, and remote changes in the terminal, then click Save to retry.' });

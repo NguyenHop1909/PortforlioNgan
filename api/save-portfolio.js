@@ -1,5 +1,6 @@
 // Only authenticated admin sessions may write portfolio content.
 import { authenticated, githubFile, parseBody, sameOrigin, send, validPortfolio } from '../server/admin.mjs';
+import { commitImages, validAsset } from '../server/media.mjs';
 
 export default async function handler(request, response) {
   if (!authenticated(request)) return send(response, 401, { error: 'Your session expired. Sign in again to save.' });
@@ -11,6 +12,10 @@ export default async function handler(request, response) {
     return send(response, 400, { error: 'Invalid portfolio data. Please check all fields and links.' });
   }
   try {
+    if (body.assets?.length) {
+      if (!Array.isArray(body.assets) || body.assets.length > 97 || !body.assets.every(validAsset)) return send(response, 400, { error: 'Invalid uploaded images.' });
+      return send(response, 200, await commitImages(body.portfolio, body.sha, body.assets));
+    }
     const result = await githubFile('PUT', {
       message: 'Update portfolio from admin editor', sha: body.sha,
       content: Buffer.from(`export const PORTFOLIO_DATA = ${JSON.stringify(body.portfolio, null, 2)};\n`, 'utf8').toString('base64'),
@@ -19,7 +24,8 @@ export default async function handler(request, response) {
     if (!result.ok) return send(response, 502, { error: 'GitHub could not save. Check the token has Contents: Read and write access to this repository.' });
     const saved = await result.json();
     return send(response, 200, { ok: true, sha: saved.content.sha, commitUrl: saved.commit.html_url });
-  } catch {
+  } catch (error) {
+    if (error.status === 409) return send(response, 409, { error: 'The portfolio changed. Keep your draft and reload the latest version before saving.' });
     return send(response, 502, { error: 'Could not confirm the save. Check GitHub before retrying, and keep this editor open.' });
   }
 }
