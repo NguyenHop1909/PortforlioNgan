@@ -2,7 +2,7 @@ import { createHash, createHmac, timingSafeEqual, randomBytes } from 'node:crypt
 const COOKIE = '__Host-portfolio-admin';
 const digest = value => createHash('sha256').update(value).digest();
 export function configured() {
-  return process.env.ADMIN_PASSWORD?.length >= 16 && process.env.ADMIN_SESSION_SECRET?.length >= 32;
+  return process.env.ADMIN_PASSWORD?.length >= 4 && process.env.ADMIN_SESSION_SECRET?.length >= 32;
 }
 export function sameOrigin(request) {
   try {

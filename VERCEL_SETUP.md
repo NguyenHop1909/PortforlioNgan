@@ -4,7 +4,7 @@ Admin URL: https://portforlio-ngan.vercel.app/admin
 
 In the Vercel project, open Settings > Environment Variables and add these for Production:
 
-- ADMIN_PASSWORD: a randomly generated password of at least 16 characters. Share it privately with the portfolio owner.
+- ADMIN_PASSWORD: at least 4 characters (short PINs are supported at the owner's request; a long random password is safer). Share it privately with the portfolio owner.
 - ADMIN_SESSION_SECRET: a different random string of at least 32 characters, used to sign session cookies. Do not share it with the editor.
 - GITHUB_TOKEN: a fine-grained GitHub token restricted to NguyenHop1909/PortforlioNgan with Contents: Read and write.
 

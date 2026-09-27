@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { authenticated, sessionCookie, validPortfolio } from './server/admin.mjs';
+import { authenticated, configured, passwordMatches, sessionCookie, validPortfolio } from './server/admin.mjs';
 import session from './api/admin-session.js';
 import save from './api/save-portfolio.js';
 import read from './api/admin-portfolio.js';
@@ -10,6 +10,24 @@ process.env.ADMIN_PASSWORD = 'test-only-password-not-for-production';
 process.env.ADMIN_SESSION_SECRET = 'test-only-session-secret-not-for-production';
 process.env.GITHUB_TOKEN = 'fake-test-token';
 const origin = 'https://portfolio.example';
+test('four-digit passwords preserve leading zeros and still require a strong session secret', t => {
+  const originalPassword = process.env.ADMIN_PASSWORD;
+  const originalSecret = process.env.ADMIN_SESSION_SECRET;
+  t.after(() => {
+    process.env.ADMIN_PASSWORD = originalPassword;
+    process.env.ADMIN_SESSION_SECRET = originalSecret;
+  });
+  process.env.ADMIN_PASSWORD = '0123';
+  assert.equal(configured(), true);
+  assert.equal(passwordMatches('0123'), true);
+  assert.equal(passwordMatches('123'), false);
+  assert.equal(passwordMatches(123), false);
+  process.env.ADMIN_PASSWORD = '123';
+  assert.equal(configured(), false);
+  process.env.ADMIN_PASSWORD = '0123';
+  process.env.ADMIN_SESSION_SECRET = 'short';
+  assert.equal(configured(), false);
+});
 function request(body, method = 'POST', cookie = sessionCookie().split(';')[0]) {
   return { method, body, headers: { host: 'portfolio.example', origin, cookie, 'content-type': 'application/json' } };
 }
