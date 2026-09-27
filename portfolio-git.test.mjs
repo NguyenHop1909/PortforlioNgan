@@ -35,8 +35,8 @@ test('push errors are propagated instead of reporting success', async () => {
   const git = fakeGit({ pushFails: true });
   await assert.rejects(pushPortfolio('.', git.run), /Push rejected/);
 });
-test('public save is disabled', () => {
+test('public save requires authentication', async () => {
   let status;
-  publicSave({}, { status(code) { status = code; return this; }, json(body) { assert.match(body.error, /disabled/); } });
-  assert.equal(status, 403);
+  await publicSave({ headers: {} }, { setHeader() {}, status(code) { status = code; return this; }, json(body) { assert.match(body.error, /Sign in/); } });
+  assert.equal(status, 401);
 });

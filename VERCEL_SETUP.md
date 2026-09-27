@@ -1,9 +1,24 @@
-﻿# Local editing and public deployment
+﻿# Admin setup on Vercel
 
-Production is read-only: Edit buttons and editor are disabled. The public save API returns 403. No GitHub token is needed on Vercel.
+Admin URL: https://portforlio-ngan.vercel.app/admin
 
-Run `npm run dev -- --host 127.0.0.1` on your computer. Save writes `src/data/portfolio.js`, commits only that file, and pushes main to origin (NguyenHop1909/PortforlioNgan). Git must be signed in with write access. No force push is used.
+In the Vercel project, open Settings > Environment Variables and add these for Production:
 
-If push fails, the file remains saved locally. Resolve the Git error in the terminal, then click Save to retry. Other modified or staged files are excluded from the editor commit. Push also sends existing unpushed commits on main.
+- ADMIN_PASSWORD: a randomly generated password of at least 16 characters. Share it privately with the portfolio owner.
+- ADMIN_SESSION_SECRET: a different random string of at least 32 characters, used to sign session cookies. Do not share it with the editor.
+- GITHUB_TOKEN: a fine-grained GitHub token restricted to NguyenHop1909/PortforlioNgan with Contents: Read and write.
 
-Publish the application changes once to enable the read-only public build. If Vercel is connected to main, later successful saves trigger its configured deployment. Deployment completion is separate from push success.
+Optional: GITHUB_REPOSITORY=NguyenHop1909/PortforlioNgan and GITHUB_BRANCH=main (these are already the defaults).
+Never use VITE_ prefixes for secrets. Redeploy after adding or changing variables. Enable Preview variables only if admin access is needed on previews.
+
+The editor signs in at /admin, opens the portfolio, changes fields and clicks Save changes. The API reads the latest GitHub revision and commits only src/data/portfolio.js. Connected Vercel Git deployments publish that commit. A successful save confirms the GitHub commit, not deployment completion.
+
+Visitors see no Edit button. Every remote read/write requires a signed HttpOnly, Secure, SameSite=Strict cookie (8-hour session); writes also require a same-origin request. Changing ADMIN_PASSWORD or ADMIN_SESSION_SECRET invalidates existing sessions. Logout clears the browser cookie. Login cooldown is best-effort per running function instance, not a global distributed rate limit; use a randomly generated password and optionally Vercel Firewall rate limiting for /api/admin-session.
+
+Concurrent edits are rejected via the GitHub file SHA instead of overwriting newer changes. On a conflict, copy unsaved text, refresh and reopen the latest version. If GitHub times out, inspect the repository before retrying.
+
+npm run dev retains the existing local editor. The deployed /admin flow requires Vercel Functions and HTTPS. Do not enter production credentials on a plain Vite dev server.
+
+References:
+- https://docs.github.com/en/rest/repos/contents#create-or-update-file-contents
+- https://vercel.com/docs/environment-variables

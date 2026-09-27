@@ -22,7 +22,7 @@ function cloneData(value) {
   return JSON.parse(JSON.stringify(value));
 }
 
-function PortfolioEditor({ draft, setDraft, onSave, onClose, onReset, saveState, saveError }) {
+export function PortfolioEditor({ draft, setDraft, onSave, onClose, onReset, saveState, saveError, remote = false }) {
   const dialogRef = useRef(null);
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -46,10 +46,10 @@ function PortfolioEditor({ draft, setDraft, onSave, onClose, onReset, saveState,
   const updateList = (index, field, value) => updateProject(index, field, value.split('\n').map(item => item.trim()).filter(Boolean));
 
   return (
-    <dialog ref={dialogRef} className="editor-dialog" onCancel={onClose} aria-labelledby="editor-title">
+    <dialog ref={dialogRef} className="editor-dialog" onCancel={event => { event.preventDefault(); onClose(); }} aria-labelledby="editor-title">
       <div className="editor-header">
-        <div><span className="eyebrow">WEBSITE EDITOR</span><h2 id="editor-title">Edit your portfolio</h2><p>Save changes writes src/data/portfolio.js and pushes your portfolio to GitHub.</p></div>
-        <button className="icon-button" onClick={onClose} aria-label="Close editor">×</button>
+        <div><span className="eyebrow">WEBSITE EDITOR</span><h2 id="editor-title">Edit your portfolio</h2><p>{remote ? 'Chỉnh nội dung rồi bấm Save changes. Website sẽ cập nhật sau khi bản mới triển khai xong.' : 'Save changes writes src/data/portfolio.js and pushes your portfolio to GitHub.'}</p></div>
+        <button className="icon-button" onClick={onClose} disabled={saveState === 'saving'} aria-label="Close editor">×</button>
       </div>
       <div className="editor-body">
         <section className="editor-section">
@@ -94,7 +94,7 @@ function PortfolioEditor({ draft, setDraft, onSave, onClose, onReset, saveState,
           </article>)}</div>
         </section>
       </div>
-      <div className="editor-actions"><button className="text-link" onClick={onReset} disabled={saveState === 'saving'}>Reset saved changes</button><div>{saveState === 'error' && <span role="alert" className="save-status error">{saveError}</span>}{saveState === 'success' && <span role="status" className="save-status success">Saved to file and pushed to GitHub.</span>}<button className="button secondary" onClick={onClose} disabled={saveState === 'saving'}>Cancel</button><button className="button" onClick={onSave} disabled={saveState === 'saving'}>{saveState === 'saving' ? 'Saving & pushing…' : 'Save changes'} <Arrow /></button></div></div>
+      <div className="editor-actions"><button className="text-link" onClick={onReset} disabled={saveState === 'saving'}>Reset saved changes</button><div>{saveState === 'error' && <span role="alert" className="save-status error">{saveError}</span>}{saveState === 'success' && <span role="status" className="save-status success">{remote ? 'Đã lưu. Website đang chờ triển khai bản mới.' : 'Saved to file and pushed to GitHub.'}</span>}<button className="button secondary" onClick={onClose} disabled={saveState === 'saving'}>Cancel</button><button className="button" onClick={onSave} disabled={saveState === 'saving'}>{saveState === 'saving' ? 'Saving & pushing…' : 'Save changes'} <Arrow /></button></div></div>
     </dialog>
   );
 }
