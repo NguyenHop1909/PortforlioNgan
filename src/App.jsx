@@ -85,6 +85,7 @@ export function PortfolioEditor({ draft, setDraft, onSave, onClose, onReset, onP
           <div className="editor-section-heading"><h3>Projects</h3><span>Case studies</span></div>
           <div className="editor-stack">{draft.projects.map((project, index) => <article className="editor-item" key={project.id}>
             <div className="editor-item-title"><span>0{index + 1}</span><strong>{project.client}</strong></div>
+            <p className="image-help">Ảnh gốc và ảnh bìa của dự án luôn được giữ lại. Những ảnh bên dưới là ảnh bổ sung.</p>
             <ImageEditor images={project.images || []} onChange={images => updateProject(index, 'images', images)} onBusy={setImageBusy} />
             <label className="gallery-layout-control">Bố cục ảnh<select value={project.galleryLayout || 'grid'} onChange={event => updateProject(index, 'galleryLayout', event.target.value)}><option value="grid">Lưới hai cột</option><option value="stack">Ảnh lớn xếp dọc</option></select></label>
             <div className="editor-fields">
@@ -127,7 +128,8 @@ function CaseStudy({ project, onClose }) {
         <span className="pill">{project.category}</span>
         <h2 id="case-title">{project.title}</h2>
         <p className="case-client">{project.client}</p>
-        {project.images?.length ? <div className={`project-gallery gallery-${project.galleryLayout || 'grid'}`}>{project.images.map((image, index) => <figure key={index}><a href={image.src} target="_blank" rel="noreferrer"><img src={image.src} alt={image.alt || project.title} style={imageStyle(image)} loading="lazy" /></a>{image.caption && <figcaption>{image.caption}</figcaption>}</figure>)}</div> : project.index !== 7 && <img className="case-image" src={`/work/${work[project.index].image}`} alt={`Portfolio reference for ${project.client}`} />}
+        {project.index !== 7 && <img className="case-image" src={`/work/${work[project.index].image}`} alt={`Portfolio reference for ${project.client}`} />}
+        {project.images?.length > 0 && <div className={`project-gallery gallery-${project.galleryLayout || 'grid'}`}>{project.images.map((image, index) => <figure key={index}><a href={image.src} target="_blank" rel="noreferrer"><img src={image.src} alt={image.alt || project.title} style={imageStyle(image)} loading="lazy" /></a>{image.caption && <figcaption>{image.caption}</figcaption>}</figure>)}</div>}
         <h3>The brief</h3><p>{project.summary}</p>
         <h3>My contribution</h3><p>{project.role}</p>
         <h3>The deliverables</h3><ul>{project.outcomes.map(item => <li key={item}>{item}</li>)}</ul>
@@ -255,7 +257,7 @@ export default function App({ previewData = null }) {
                 <span className="project-brand">{project.client}</span>
                 <div className={`work-frame ${[0, 1].includes(project.index) ? 'article-frame' : 'video-frame'} ${project.index === 7 ? 'wide-frame' : ''}`}>
                   <div className="frame-top"><span /><span /><span /><small>{visual.tags.includes(2) ? 'creator’s corner' : 'brand stories'}</small></div>
-                  <img src={project.images?.[0]?.src || `/work/${visual.image}`} style={project.images?.[0] ? imageStyle(project.images[0]) : undefined} alt={project.index === 7 ? 'Creative workspace illustration' : `${project.client} campaign reference from Ngân’s portfolio`} loading="lazy" />
+                  <img src={`/work/${visual.image}`} alt={project.index === 7 ? 'Creative workspace illustration' : `${project.client} campaign reference from Ngân’s portfolio`} loading="lazy" />
                 </div>
                 {visual.tags.includes(2) && project.index !== 7 && <span className="play-badge" aria-hidden="true">▷</span>}
                 <span className="result-sticker">✦ {project.results}</span>

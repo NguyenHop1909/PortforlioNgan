@@ -1,4 +1,4 @@
-﻿# Admin setup on Vercel
+# Admin setup on Vercel
 
 Admin URL: https://portforlio-ngan.vercel.app/admin
 
@@ -25,7 +25,7 @@ References:
 
 ## Photos and project artwork
 
-In the editor, choose a personal portrait or add up to 12 images per project. JPG, PNG and WebP inputs up to 20 MB are resized to at most 1800px and converted to WebP in the browser. If the optimized image exceeds the upload limit, choose a smaller image. You can reorder images, set captions/alt text, select contain/cover, focal height, background color, corner radius and grid/stack layout. The first project image is its cover.
+In the editor, choose a personal portrait or add up to 12 images per project. JPG, PNG and WebP inputs up to 20 MB are resized to at most 1800px and converted to WebP in the browser. If the optimized image exceeds the upload limit, choose a smaller image. You can reorder images, set captions/alt text, select contain/cover, focal height, background color, corner radius and grid/stack layout. Original project covers and reference images are preserved. Uploaded project images are displayed as an additional gallery.
 
 Preview uses the local draft. Save stages authenticated image blobs, then creates one Git commit containing the image files under public/uploads and src/data/portfolio.js. A signed receipt prevents substituting a different upload path or blob. The branch update is non-forced and rejects concurrent changes. No extra service or environment variables are required.
 

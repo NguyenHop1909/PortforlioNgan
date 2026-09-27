@@ -29,7 +29,7 @@ export default function ImageEditor({ images, onChange, portrait = false, onBusy
     <label className="image-upload">{loading ? 'Đang xử lý ảnh…' : portrait ? 'Chọn / thay ảnh cá nhân' : 'Thêm ảnh thiết kế'}
       <input type="file" accept="image/jpeg,image/png,image/webp" multiple={!portrait} onChange={add} disabled={loading} />
     </label>
-    <p className="image-help">JPG, PNG, WebP · tối đa 20 MB/ảnh · tự tối ưu. {portrait ? 'Dùng ở phần mở đầu và giới thiệu.' : `Tối đa ${limit} ảnh; ảnh đầu tiên làm ảnh bìa dự án.`} Ảnh chỉ được tải lên khi bấm Lưu.</p>
+    <p className="image-help">JPG, PNG, WebP · tối đa 20 MB/ảnh · tự tối ưu. {portrait ? 'Dùng ở phần mở đầu và giới thiệu.' : `Tối đa ${limit} ảnh bổ sung; không thay thế ảnh gốc và ảnh bìa dự án.`} Ảnh chỉ được tải lên khi bấm Lưu.</p>
     {error && <p role="alert" className="admin-error">{error}</p>}
     <div className="image-editor-list">{images.map((image, index) => <article className="image-editor-item" key={index}>
       <img src={image.src} alt={image.alt || 'Ảnh đang chỉnh'} style={imageStyle(image)} />
