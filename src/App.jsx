@@ -1,9 +1,11 @@
-﻿import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { PORTFOLIO_DATA as data } from './data/portfolio';
 import { CANVA_PORTFOLIO_URL } from './data/projectsData';
 import './App.css';
 
 const filters = ['All projects', 'Brand writing', 'Video scripts', 'Social content'];
+const STORAGE_KEY = 'xana-portfolio-content';
+const LOCAL_FILE_SAVE = import.meta.env.DEV;
 const work = [
   { image: 'mb.png', tags: [1, 3], format: 'PR & Brand storytelling', title: 'Small actions. A nationwide story.', brand: 'MB Bank', result: '3M+ digital engagements', color: 'blue' },
   { image: 'vgj.png', tags: [1, 3], format: 'Product launch · PR', title: 'A golden start to the new year.', brand: 'VietinBank Gold & Jewellery', result: '2025 collection launch', color: 'peach' },
@@ -14,12 +16,88 @@ const work = [
   { image: 'monte.png', tags: [2, 3], format: 'Social content · Community', title: 'Little moments. Meaningful connections.', brand: 'Zott Monte', result: 'Full-year content campaign', color: 'blue' },
   { image: 'creative-desk.jpg', tags: [1, 2, 3], format: 'Employer branding · Social', title: 'The stories behind the creative team.', brand: 'THE A LIST', result: '50–80K additional monthly views', color: 'peach' },
 ];
-const services = [
-  { icon: '✎', title: 'Brand writing', desc: 'The right words, in your brand’s voice. From PR articles to launch stories and campaign copy.', tags: ['PR articles', 'Brand storytelling', 'Copywriting'] },
-  { icon: '▷', title: 'Video scripts', desc: 'A hook that gets attention. A story that holds it. Scripts made for creators and their audiences.', tags: ['TikTok & Reels', 'KOL / KOC scripts', 'Creative concepts'] },
-  { icon: '✳', title: 'Social content', desc: 'Content that makes brands part of the conversation, with a clear plan behind every post.', tags: ['Social captions', 'Content planning', 'Community'] },
-];
 function Arrow() { return <span aria-hidden="true">↗</span>; }
+
+function cloneData(value) {
+  return JSON.parse(JSON.stringify(value));
+}
+
+function PortfolioEditor({ draft, setDraft, onSave, onClose, onReset, saveState, saveError }) {
+  const dialogRef = useRef(null);
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    dialog.showModal();
+    return () => {
+      if (dialog.open) dialog.close();
+    };
+  }, []);
+  const updatePersonal = (field, value) => setDraft(current => ({
+    ...current,
+    personalInfo: { ...current.personalInfo, [field]: value }
+  }));
+  const updateProject = (index, field, value) => setDraft(current => ({
+    ...current,
+    projects: current.projects.map((project, projectIndex) => projectIndex === index ? { ...project, [field]: value } : project)
+  }));
+  const updateService = (index, field, value) => setDraft(current => ({
+    ...current,
+    services: current.services.map((service, serviceIndex) => serviceIndex === index ? { ...service, [field]: value } : service)
+  }));
+  const updateList = (index, field, value) => updateProject(index, field, value.split('\n').map(item => item.trim()).filter(Boolean));
+
+  return (
+    <dialog ref={dialogRef} className="editor-dialog" onCancel={onClose} aria-labelledby="editor-title">
+      <div className="editor-header">
+        <div><span className="eyebrow">WEBSITE EDITOR</span><h2 id="editor-title">Edit your portfolio</h2><p>Save changes writes src/data/portfolio.js and pushes your portfolio to GitHub.</p></div>
+        <button className="icon-button" onClick={onClose} aria-label="Close editor">×</button>
+      </div>
+      <div className="editor-body">
+        <section className="editor-section">
+          <div className="editor-section-heading"><h3>Personal information</h3><span>About and contact</span></div>
+          <div className="editor-fields">
+            <label>Display name<input value={draft.personalInfo.name} onChange={event => updatePersonal('name', event.target.value)} /></label>
+            <label>Nickname<input value={draft.personalInfo.nickname} onChange={event => updatePersonal('nickname', event.target.value)} /></label>
+            <label>Role<input value={draft.personalInfo.role} onChange={event => updatePersonal('role', event.target.value)} /></label>
+            <label>Email<input type="email" value={draft.personalInfo.email} onChange={event => updatePersonal('email', event.target.value)} /></label>
+            <label>Phone<input value={draft.personalInfo.phone} onChange={event => updatePersonal('phone', event.target.value)} /></label>
+            <label>LinkedIn URL<input type="url" value={draft.personalInfo.linkedin} onChange={event => updatePersonal('linkedin', event.target.value)} /></label>
+            <label className="field-wide">Bio<textarea rows="4" value={draft.personalInfo.bio} onChange={event => updatePersonal('bio', event.target.value)} /></label>
+            <label className="field-wide">Fields, one per line<textarea rows="3" value={draft.personalInfo.fields.join('\n')} onChange={event => updatePersonal('fields', event.target.value.split('\n').map(item => item.trim()).filter(Boolean))} /></label>
+          </div>
+        </section>
+        <section className="editor-section">
+          <div className="editor-section-heading"><h3>Services</h3><span>What you do</span></div>
+          <div className="editor-stack">{draft.services.map((service, index) => <article className="editor-item" key={index}>
+            <div className="editor-item-title"><span>0{index + 1}</span><strong>Service {index + 1}</strong></div>
+            <div className="editor-fields">
+              <label>Title<input value={service.title} onChange={event => updateService(index, 'title', event.target.value)} /></label>
+              <label>Icon<input value={service.icon} onChange={event => updateService(index, 'icon', event.target.value)} /></label>
+              <label className="field-wide">Description<textarea rows="3" value={service.desc} onChange={event => updateService(index, 'desc', event.target.value)} /></label>
+              <label className="field-wide">Tags, one per line<textarea rows="2" value={service.tags.join('\n')} onChange={event => updateService(index, 'tags', event.target.value.split('\n').map(item => item.trim()).filter(Boolean))} /></label>
+            </div>
+          </article>)}</div>
+        </section>
+        <section className="editor-section">
+          <div className="editor-section-heading"><h3>Projects</h3><span>Case studies</span></div>
+          <div className="editor-stack">{draft.projects.map((project, index) => <article className="editor-item" key={project.id}>
+            <div className="editor-item-title"><span>0{index + 1}</span><strong>{project.client}</strong></div>
+            <div className="editor-fields">
+              <label>Project title<input value={project.title} onChange={event => updateProject(index, 'title', event.target.value)} /></label>
+              <label>Client<input value={project.client} onChange={event => updateProject(index, 'client', event.target.value)} /></label>
+              <label>Category<input value={project.category} onChange={event => updateProject(index, 'category', event.target.value)} /></label>
+              <label className="field-wide">Summary<textarea rows="3" value={project.summary} onChange={event => updateProject(index, 'summary', event.target.value)} /></label>
+              <label className="field-wide">Your contribution<textarea rows="3" value={project.role} onChange={event => updateProject(index, 'role', event.target.value)} /></label>
+              <label className="field-wide">Impact<textarea rows="3" value={project.results} onChange={event => updateProject(index, 'results', event.target.value)} /></label>
+              <label className="field-wide">Deliverables, one per line<textarea rows="3" value={project.outcomes.join('\n')} onChange={event => updateList(index, 'outcomes', event.target.value)} /></label>
+              <label className="field-wide">Published links, one `name|url` per line<textarea rows="3" value={project.links.map(link => `${link.name}|${link.url}`).join('\n')} onChange={event => updateProject(index, 'links', event.target.value.split('\n').map(item => item.trim()).filter(Boolean).map(item => { const [name, ...url] = item.split('|'); return { name: name.trim(), url: url.join('|').trim() }; }))} /></label>
+            </div>
+          </article>)}</div>
+        </section>
+      </div>
+      <div className="editor-actions"><button className="text-link" onClick={onReset} disabled={saveState === 'saving'}>Reset saved changes</button><div>{saveState === 'error' && <span role="alert" className="save-status error">{saveError}</span>}{saveState === 'success' && <span role="status" className="save-status success">Saved to file and pushed to GitHub.</span>}<button className="button secondary" onClick={onClose} disabled={saveState === 'saving'}>Cancel</button><button className="button" onClick={onSave} disabled={saveState === 'saving'}>{saveState === 'saving' ? 'Saving & pushing…' : 'Save changes'} <Arrow /></button></div></div>
+    </dialog>
+  );
+}
 
 function CaseStudy({ project, onClose }) {
   const dialog = useRef(null);
@@ -60,9 +138,56 @@ export default function App() {
   const [filter, setFilter] = useState(0);
   const [expanded, setExpanded] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const projects = data.projects.map((project, index) => ({ ...project, index }))
+  const [portfolio, setPortfolio] = useState(() => {
+    if (!LOCAL_FILE_SAVE) return cloneData(data);
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      return saved ? { ...cloneData(data), ...JSON.parse(saved) } : cloneData(data);
+    } catch {
+      return cloneData(data);
+    }
+  });
+  const [editorDraft, setEditorDraft] = useState(null);
+  const [saveState, setSaveState] = useState('idle');
+  const [saveError, setSaveError] = useState('');
+  const projects = portfolio.projects.map((project, index) => ({ ...project, index }))
     .filter(project => filter === 0 || work[project.index].tags.includes(filter));
   const visible = expanded ? projects : projects.slice(0, 4);
+  const openEditor = () => setEditorDraft(cloneData(portfolio));
+  const closeEditor = () => {
+    if (saveState === 'saving') return;
+    setEditorDraft(null);
+    setSaveState('idle');
+    setSaveError('');
+  };
+  const saveEditor = async () => {
+    setSaveState('saving');
+    setSaveError('');
+    try {
+      if (LOCAL_FILE_SAVE) {
+        const response = await fetch('/api/local-save-portfolio', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(editorDraft),
+        });
+        const result = await response.json().catch(() => ({}));
+        if (result.savedLocally) {
+          setPortfolio(cloneData(editorDraft));
+          try { localStorage.removeItem(STORAGE_KEY); } catch { /* File is saved. */ }
+        }
+        if (!response.ok || result.ok !== true) throw new Error(result.error || 'The local save server is unavailable. Restart npm run dev and try again.');
+        try { localStorage.removeItem(STORAGE_KEY); } catch { /* File is already saved. */ }
+      } else {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(editorDraft));
+      }
+      setPortfolio(cloneData(editorDraft));
+      setSaveState('success');
+    } catch (error) {
+      setSaveState('error');
+      setSaveError(error.message || 'Could not save your changes. Please try again.');
+    }
+  };
+  const resetEditor = () => setEditorDraft(cloneData(data));
 
   return (
     <>
@@ -72,6 +197,7 @@ export default function App() {
         <button className="menu-toggle" aria-label="Toggle navigation" aria-expanded={menuOpen} aria-controls="navigation" onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? 'Close ×' : 'Menu ☰'}</button>
         <nav id="navigation" className={menuOpen ? 'navigation open' : 'navigation'} aria-label="Main navigation">
           {[['projects', 'My work'], ['services', 'What I do'], ['about', 'Meet Ngân']].map(([id, label]) => <a key={id} href={`#${id}`} onClick={() => setMenuOpen(false)}>{label}</a>)}
+          {LOCAL_FILE_SAVE && <button className="button small editor-launch" onClick={() => { openEditor(); setMenuOpen(false); }}>Edit portfolio <span aria-hidden="true">✎</span></button>}
           <a className="button small" href="#contact" onClick={() => setMenuOpen(false)}>Let’s connect <Arrow /></a>
         </nav>
       </header>
@@ -97,38 +223,39 @@ export default function App() {
         <section className="brands shell" aria-label="Brand experience"><p>A few brands I’ve created content for</p><div><span>MB<span className="brand-star">✦</span></span><span className="vgj">VietinBank<small>GOLD & JEWELLERY</small></span><span>PÖNNIE</span><span className="oliv">Ôliv</span><span className="purite">Purité</span><span>monte</span><span className="alist">THE A LIST.</span></div></section>
         <section className="services-section shell" id="services">
           <div className="section-heading"><div><span className="eyebrow">MY CREATIVE TOOLKIT</span><h2>Different formats.<br /><span>Same love for storytelling.</span></h2></div><p>From the first idea to the final caption,<br />here’s how I bring a brand’s story to life.</p></div>
-          <div className="services-grid">{services.map((service, index) => <article className={`service-card service-${index}`} key={service.title}><span className="service-icon" aria-hidden="true">{service.icon}</span><h3>{service.title}</h3><p>{service.desc}</p><div className="service-tags">{service.tags.map(tag => <span key={tag}>{tag}</span>)}</div></article>)}</div>
+            <div className="services-grid">{portfolio.services.map((service, index) => <article className={`service-card service-${index}`} key={service.title}><span className="service-icon" aria-hidden="true">{service.icon}</span><h3>{service.title}</h3><p>{service.desc}</p><div className="service-tags">{service.tags.map(tag => <span key={tag}>{tag}</span>)}</div></article>)}</div>
         </section>
         <section className="work-section" id="projects"><div className="shell">
           <div className="section-heading"><div><span className="eyebrow">A PEEK INTO MY WORK</span><h2>Made with ideas.<br /><span>And a little bit of me.</span> <span className="heading-spark" aria-hidden="true">✳</span></h2></div><a className="text-link" href={CANVA_PORTFOLIO_URL} target="_blank" rel="noreferrer">View full portfolio <Arrow /></a></div>
-          <div className="filter-bar" aria-label="Filter projects">{filters.map((label, index) => <button key={label} className={filter === index ? 'filter active' : 'filter'} aria-pressed={filter === index} onClick={() => { setFilter(index); setExpanded(false); }}>{label}{index === 0 && <span>{data.projects.length}</span>}</button>)}</div>
+          <div className="filter-bar" aria-label="Filter projects">{filters.map((label, index) => <button key={label} className={filter === index ? 'filter active' : 'filter'} aria-pressed={filter === index} onClick={() => { setFilter(index); setExpanded(false); }}>{label}{index === 0 && <span>{portfolio.projects.length}</span>}</button>)}</div>
           <div className="project-grid">{visible.map(project => {
             const visual = work[project.index];
             return <button className="project-card" key={project.id} onClick={() => setSelectedProject(project)} aria-label={`View case study: ${project.title}`}>
               <div className={`project-visual ${visual.color}`}>
-                <span className="project-brand">{visual.brand}</span>
+                <span className="project-brand">{project.client}</span>
                 <div className={`work-frame ${[0, 1].includes(project.index) ? 'article-frame' : 'video-frame'} ${project.index === 7 ? 'wide-frame' : ''}`}>
                   <div className="frame-top"><span /><span /><span /><small>{visual.tags.includes(2) ? 'creator’s corner' : 'brand stories'}</small></div>
-                  <img src={`/work/${visual.image}`} alt={project.index === 7 ? 'Creative workspace illustration' : `${visual.brand} campaign reference from Ngân’s portfolio`} loading="lazy" />
+                  <img src={`/work/${visual.image}`} alt={project.index === 7 ? 'Creative workspace illustration' : `${project.client} campaign reference from Ngân’s portfolio`} loading="lazy" />
                 </div>
                 {visual.tags.includes(2) && project.index !== 7 && <span className="play-badge" aria-hidden="true">▷</span>}
-                <span className="result-sticker">✦ {visual.result}</span>
+                <span className="result-sticker">✦ {project.results}</span>
                 <span className="open-project" aria-hidden="true">↗</span>
               </div>
-              <div className="project-info"><span className="project-format">{visual.format}</span><h3>{visual.title}</h3><p>{project.summary}</p><span className="case-link">Explore the project <Arrow /></span></div>
+              <div className="project-info"><span className="project-format">{project.category}</span><h3>{project.title}</h3><p>{project.summary}</p><span className="case-link">Explore the project <Arrow /></span></div>
             </button>;
           })}</div>
           <div className="work-bottom"><span aria-live="polite">{visible.length} of {projects.length} projects</span>{projects.length > 4 && <button className="button secondary" onClick={() => setExpanded(!expanded)}>{expanded ? 'A little less' : 'There’s more where that came from'} <span aria-hidden="true">{expanded ? '−' : '+'}</span></button>}</div>
         </div></section>
         <section className="about-section shell" id="about">
           <div className="about-photo"><img src="/work/ngan.jpg" alt="Meet Ngân, the writer behind XANA" loading="lazy" /><div className="about-photo-note">A curious mind,<br />a notes app full of ideas. <span aria-hidden="true">♡</span></div><span className="about-flower" aria-hidden="true">✳</span></div>
-          <div className="about-copy"><span className="eyebrow">THE HUMAN BEHIND THE CONTENT</span><h2>Hi again.<br />You can call me <span>Ngân.</span></h2><p className="full-name">Nguyễn Phúc Xuân Ngân · Content Creator / Copywriter</p><p>{data.personalInfo.bio}</p><p>I enjoy finding the small human insight that turns a brand message into something people actually care about.</p><div className="industry-tags">{data.personalInfo.fields.map(field => <span key={field}>{field}</span>)}</div><div className="stats-row"><div><strong>2+</strong><span>Years creating content</span></div><div><strong>3,600+</strong><span>Project outcomes delivered</span></div></div></div>
+            <div className="about-copy"><span className="eyebrow">THE HUMAN BEHIND THE CONTENT</span><h2>Hi again.<br />You can call me <span>{portfolio.personalInfo.nickname}.</span></h2><p className="full-name">{portfolio.personalInfo.name} · {portfolio.personalInfo.role}</p><p>{portfolio.personalInfo.bio}</p><p>I enjoy finding the small human insight that turns a brand message into something people actually care about.</p><div className="industry-tags">{portfolio.personalInfo.fields.map(field => <span key={field}>{field}</span>)}</div><div className="stats-row"><div><strong>2+</strong><span>Years creating content</span></div><div><strong>3,600+</strong><span>Project outcomes delivered</span></div></div></div>
         </section>
         <section className="process-section shell"><span className="eyebrow">HOW WE CAN WORK TOGETHER</span><h2>Good content starts with <span>a good conversation.</span></h2><div className="process-grid">{[['Let’s talk', 'Your brand, your audience, and what you want to say.'], ['Find the idea', 'A clear direction, a fresh angle, and a concept that fits.'], ['Make it happen', 'Thoughtful writing, collaborative feedback, and content ready to go.']].map(([title, description], index) => <div key={title}><span className="step-number">0{index + 1}</span><h3>{title}</h3><p>{description}</p></div>)}</div></section>
-        <section className="contact-section shell" id="contact"><div className="contact-card"><span className="contact-spark" aria-hidden="true">✳</span><span className="eyebrow">GOT A BRIEF? OR JUST A BIG IDEA?</span><h2>Let’s make something<br /><span>worth sharing.</span></h2><p>Your next brand story could start with a hello.</p><a className="button" href={`mailto:${data.personalInfo.email}`}>Say hello to Ngân <Arrow /></a><a className="email-link" href={`mailto:${data.personalInfo.email}`}>{data.personalInfo.email}</a><span className="contact-doodle" aria-hidden="true">☺</span></div></section>
+        <section className="contact-section shell" id="contact"><div className="contact-card"><span className="contact-spark" aria-hidden="true">✳</span><span className="eyebrow">GOT A BRIEF? OR JUST A BIG IDEA?</span><h2>Let’s make something<br /><span>worth sharing.</span></h2><p>Your next brand story could start with a hello.</p><a className="button" href={`mailto:${portfolio.personalInfo.email}`}>Say hello to {portfolio.personalInfo.nickname} <Arrow /></a><a className="email-link" href={`mailto:${portfolio.personalInfo.email}`}>{portfolio.personalInfo.email}</a><span className="contact-doodle" aria-hidden="true">☺</span></div></section>
       </main>
-      <footer className="footer shell"><a className="wordmark" href="#home">xana<span>✳</span></a><p>© {new Date().getFullYear()} Xuân Ngân · A little creativity, always.</p><div><a href={data.personalInfo.linkedin} target="_blank" rel="noreferrer">LinkedIn <Arrow /></a><a href="tel:+84328818165">Call me <Arrow /></a><a href="#home" aria-label="Back to top">↑</a></div></footer>
+      <footer className="footer shell"><a className="wordmark" href="#home">xana<span>✳</span></a><p>© {new Date().getFullYear()} {portfolio.personalInfo.name} · A little creativity, always.</p><div><a href={portfolio.personalInfo.linkedin} target="_blank" rel="noreferrer">LinkedIn <Arrow /></a><a href={`tel:${portfolio.personalInfo.phone.replace(/[^\d+]/g, '')}`}>Call me <Arrow /></a>{LOCAL_FILE_SAVE && <button className="footer-edit" onClick={openEditor}>Edit <span aria-hidden="true">✎</span></button>}<a href="#home" aria-label="Back to top">↑</a></div></footer>
       {selectedProject && <CaseStudy project={selectedProject} onClose={() => setSelectedProject(null)} />}
+      {LOCAL_FILE_SAVE && editorDraft && <PortfolioEditor draft={editorDraft} setDraft={setEditorDraft} onSave={saveEditor} onClose={closeEditor} onReset={resetEditor} saveState={saveState} saveError={saveError} />}
     </>
   );
 }
