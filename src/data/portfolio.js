@@ -70,7 +70,7 @@ export const PORTFOLIO_DATA = {
     {
       "id": "mb-bank",
       "title": "MB 'Patriotic Tree' Campaign",
-      "client": "Tes thử xem lưu được không",
+      "client": "MB Bank",
       "category": "PR & CSR Strategy",
       "summary": "A nationwide CSR initiative building brand prestige through small, impactful actions and authentic experiences.",
       "role": "Led the PR direction for the campaign, defining both visual and editorial strategies while executing tailored press articles and in-depth CSR analysis to amplify social impact.",
