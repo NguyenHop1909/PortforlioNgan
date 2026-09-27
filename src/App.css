@@ -341,6 +341,11 @@ h1 { font-family: 'Manrope', sans-serif; font-size: clamp(37px, 4.1vw, 58px); le
   .case-body h2 { font-size: 25px; }
   .case-body p, .case-body li { font-size: 13px; }
 }
+.preview-toolbar { position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 14px max(20px, calc((100vw - 1200px) / 2)); background: #fff8e8; border-bottom: 1px solid #d8c89f; box-shadow: 0 3px 14px #0000000d; }
+.preview-toolbar p { margin: 4px 0 0; font-size: 13px; }
+.preview-buttons { display: flex; flex-wrap: wrap; gap: 10px; }
+.preview-toolbar .admin-error { flex-basis: 100%; }
+.portfolio-preview .site-header { position: static; }
 .admin-page { min-height: 100vh; display: grid; place-items: center; padding: 32px 18px; background: var(--cream, #faf7f2); }
 .admin-card { width: min(100%, 560px); background: white; border: 1px solid #e7e2dc; border-radius: 24px; padding: clamp(24px, 5vw, 48px); }
 .admin-card .wordmark { display: block; margin-bottom: 32px; }

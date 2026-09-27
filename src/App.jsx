@@ -22,7 +22,7 @@ function cloneData(value) {
   return JSON.parse(JSON.stringify(value));
 }
 
-export function PortfolioEditor({ draft, setDraft, onSave, onClose, onReset, saveState, saveError, remote = false }) {
+export function PortfolioEditor({ draft, setDraft, onSave, onClose, onReset, onPreview, saveState, saveError, remote = false }) {
   const dialogRef = useRef(null);
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -94,7 +94,7 @@ export function PortfolioEditor({ draft, setDraft, onSave, onClose, onReset, sav
           </article>)}</div>
         </section>
       </div>
-      <div className="editor-actions"><button className="text-link" onClick={onReset} disabled={saveState === 'saving'}>Reset saved changes</button><div>{saveState === 'error' && <span role="alert" className="save-status error">{saveError}</span>}{saveState === 'success' && <span role="status" className="save-status success">{remote ? 'Đã lưu. Website đang chờ triển khai bản mới.' : 'Saved to file and pushed to GitHub.'}</span>}<button className="button secondary" onClick={onClose} disabled={saveState === 'saving'}>Cancel</button><button className="button" onClick={onSave} disabled={saveState === 'saving'}>{saveState === 'saving' ? 'Saving & pushing…' : 'Save changes'} <Arrow /></button></div></div>
+      <div className="editor-actions">{onPreview && <button className="button secondary" onClick={onPreview} disabled={saveState === 'saving'}>Xem trước</button>}<button className="text-link" onClick={onReset} disabled={saveState === 'saving'}>Reset saved changes</button><div>{saveState === 'error' && <span role="alert" className="save-status error">{saveError}</span>}{saveState === 'success' && <span role="status" className="save-status success">{remote ? 'Đã lưu. Website đang chờ triển khai bản mới.' : 'Saved to file and pushed to GitHub.'}</span>}<button className="button secondary" onClick={onClose} disabled={saveState === 'saving'}>Cancel</button><button className="button" onClick={onSave} disabled={saveState === 'saving'}>{saveState === 'saving' ? 'Saving & pushing…' : 'Save changes'} <Arrow /></button></div></div>
     </dialog>
   );
 }
@@ -133,12 +133,12 @@ function CaseStudy({ project, onClose }) {
   );
 }
 
-export default function App() {
+export default function App({ previewData = null }) {
   const [selectedProject, setSelectedProject] = useState(null);
   const [filter, setFilter] = useState(0);
   const [expanded, setExpanded] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [portfolio, setPortfolio] = useState(() => {
+  const [savedPortfolio, setPortfolio] = useState(() => {
     if (!LOCAL_FILE_SAVE) return cloneData(data);
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
@@ -148,6 +148,7 @@ export default function App() {
     }
   });
   const [editorDraft, setEditorDraft] = useState(null);
+  const portfolio = previewData || savedPortfolio;
   const [saveState, setSaveState] = useState('idle');
   const [saveError, setSaveError] = useState('');
   const projects = portfolio.projects.map((project, index) => ({ ...project, index }))
@@ -197,7 +198,7 @@ export default function App() {
         <button className="menu-toggle" aria-label="Toggle navigation" aria-expanded={menuOpen} aria-controls="navigation" onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? 'Close ×' : 'Menu ☰'}</button>
         <nav id="navigation" className={menuOpen ? 'navigation open' : 'navigation'} aria-label="Main navigation">
           {[['projects', 'My work'], ['services', 'What I do'], ['about', 'Meet Ngân']].map(([id, label]) => <a key={id} href={`#${id}`} onClick={() => setMenuOpen(false)}>{label}</a>)}
-          {LOCAL_FILE_SAVE && <button className="button small editor-launch" onClick={() => { openEditor(); setMenuOpen(false); }}>Edit portfolio <span aria-hidden="true">✎</span></button>}
+          {LOCAL_FILE_SAVE && !previewData && <button className="button small editor-launch" onClick={() => { openEditor(); setMenuOpen(false); }}>Edit portfolio <span aria-hidden="true">✎</span></button>}
           <a className="button small" href="#contact" onClick={() => setMenuOpen(false)}>Let’s connect <Arrow /></a>
         </nav>
       </header>
@@ -253,9 +254,9 @@ export default function App() {
         <section className="process-section shell"><span className="eyebrow">HOW WE CAN WORK TOGETHER</span><h2>Good content starts with <span>a good conversation.</span></h2><div className="process-grid">{[['Let’s talk', 'Your brand, your audience, and what you want to say.'], ['Find the idea', 'A clear direction, a fresh angle, and a concept that fits.'], ['Make it happen', 'Thoughtful writing, collaborative feedback, and content ready to go.']].map(([title, description], index) => <div key={title}><span className="step-number">0{index + 1}</span><h3>{title}</h3><p>{description}</p></div>)}</div></section>
         <section className="contact-section shell" id="contact"><div className="contact-card"><span className="contact-spark" aria-hidden="true">✳</span><span className="eyebrow">GOT A BRIEF? OR JUST A BIG IDEA?</span><h2>Let’s make something<br /><span>worth sharing.</span></h2><p>Your next brand story could start with a hello.</p><a className="button" href={`mailto:${portfolio.personalInfo.email}`}>Say hello to {portfolio.personalInfo.nickname} <Arrow /></a><a className="email-link" href={`mailto:${portfolio.personalInfo.email}`}>{portfolio.personalInfo.email}</a><span className="contact-doodle" aria-hidden="true">☺</span></div></section>
       </main>
-      <footer className="footer shell"><a className="wordmark" href="#home">xana<span>✳</span></a><p>© {new Date().getFullYear()} {portfolio.personalInfo.name} · A little creativity, always.</p><div><a href={portfolio.personalInfo.linkedin} target="_blank" rel="noreferrer">LinkedIn <Arrow /></a><a href={`tel:${portfolio.personalInfo.phone.replace(/[^\d+]/g, '')}`}>Call me <Arrow /></a>{LOCAL_FILE_SAVE && <button className="footer-edit" onClick={openEditor}>Edit <span aria-hidden="true">✎</span></button>}<a href="#home" aria-label="Back to top">↑</a></div></footer>
+      <footer className="footer shell"><a className="wordmark" href="#home">xana<span>✳</span></a><p>© {new Date().getFullYear()} {portfolio.personalInfo.name} · A little creativity, always.</p><div><a href={portfolio.personalInfo.linkedin} target="_blank" rel="noreferrer">LinkedIn <Arrow /></a><a href={`tel:${portfolio.personalInfo.phone.replace(/[^\d+]/g, '')}`}>Call me <Arrow /></a>{LOCAL_FILE_SAVE && !previewData && <button className="footer-edit" onClick={openEditor}>Edit <span aria-hidden="true">✎</span></button>}<a href="#home" aria-label="Back to top">↑</a></div></footer>
       {selectedProject && <CaseStudy project={selectedProject} onClose={() => setSelectedProject(null)} />}
-      {LOCAL_FILE_SAVE && editorDraft && <PortfolioEditor draft={editorDraft} setDraft={setEditorDraft} onSave={saveEditor} onClose={closeEditor} onReset={resetEditor} saveState={saveState} saveError={saveError} />}
+      {LOCAL_FILE_SAVE && !previewData && editorDraft && <PortfolioEditor draft={editorDraft} setDraft={setEditorDraft} onSave={saveEditor} onClose={closeEditor} onReset={resetEditor} saveState={saveState} saveError={saveError} />}
     </>
   );
 }

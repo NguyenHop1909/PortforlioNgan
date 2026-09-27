@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { PortfolioEditor } from './App';
+import App, { PortfolioEditor } from './App';
 
 async function api(path, options) {
   const response = await fetch(path, { credentials: 'same-origin', ...options });
@@ -20,6 +20,7 @@ export default function Admin() {
   const [original, setOriginal] = useState(null);
   const [sha, setSha] = useState('');
   const [editing, setEditing] = useState(false);
+  const [previewing, setPreviewing] = useState(false);
   const [saveState, setSaveState] = useState('idle');
   const [commitUrl, setCommitUrl] = useState('');
   useEffect(() => {
@@ -58,7 +59,7 @@ export default function Admin() {
       setSaveState('success');
     } catch (err) {
       setError(err.message); setSaveState('error');
-      if (err.status === 401) { setAuthenticated(false); setEditing(false); }
+      if (err.status === 401) { setAuthenticated(false); setEditing(false); setPreviewing(false); }
     }
   }
   async function logout() {
@@ -69,6 +70,26 @@ export default function Admin() {
     } catch (err) { setError(err.message); }
     finally { setBusy(false); }
   }
+  function preview() {
+    setEditing(false);
+    setPreviewing(true);
+    window.scrollTo(0, 0);
+  }
+  function returnToEditor() {
+    setPreviewing(false);
+    setEditing(true);
+  }
+  if (authenticated && previewing && draft) return <div className="portfolio-preview">
+    <section className="preview-toolbar" aria-label="Điều khiển bản xem trước">
+      <div><strong>Xem trước portfolio</strong><p>{saveState === 'success' ? 'Đã lưu. Website sẽ cập nhật sau khi triển khai xong.' : 'Bản nháp — chưa cập nhật lên website.'}</p></div>
+      <div className="preview-buttons">
+        <button className="button secondary" onClick={returnToEditor} disabled={saveState === 'saving'}>Quay lại chỉnh sửa</button>
+        <button className="button" onClick={save} disabled={saveState === 'saving' || saveState === 'success'}>{saveState === 'saving' ? 'Đang lưu…' : saveState === 'success' ? 'Đã lưu' : 'Lưu thay đổi'}</button>
+      </div>
+      {error && <p className="admin-error" role="alert">{error}</p>}
+    </section>
+    <App previewData={draft} />
+  </div>;
   return <main className="admin-page">
     <section className="admin-card">
       <a className="wordmark" href="/">xana<span>✳</span></a>
@@ -87,7 +108,7 @@ export default function Admin() {
       <a className="text-link" href="/">← Về portfolio</a>
     </section>
     {authenticated && editing && draft && <PortfolioEditor remote draft={draft} setDraft={value => { if (saveState !== 'saving') { setDraft(value); setSaveState('idle'); } }} onSave={save}
-      onClose={() => { if (saveState !== 'saving') setEditing(false); }}
+      onPreview={preview} onClose={() => { if (saveState !== 'saving') setEditing(false); }}
       onReset={() => { setDraft(structuredClone(original)); setSaveState('idle'); }} saveState={saveState} saveError={error} />}
   </main>;
 }
