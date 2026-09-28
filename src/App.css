@@ -65,7 +65,7 @@ h1 { font-family: 'Manrope', sans-serif; font-size: clamp(37px, 4.1vw, 58px); le
 .floating-tag small { font-size: 9px; color: var(--muted); display: block; margin-top: 4px; }
 .tag-icon { display: grid; place-items: center; width: 35px; height: 35px; background: #e8f3df; color: var(--primary); border-radius: 11px; font-size: 22px; }
 .tag-script { top: 60px; right: -17px; transform: rotate(7deg); }
-.tag-copy { bottom: 69px; left: -13px; transform: rotate(-7deg); }
+.tag-copy { bottom: 125px; left: -13px; transform: rotate(-7deg); }
 .tag-copy .tag-icon { color: #7b8450; background: #f0f2d9; }
 .scene-spark { position: absolute; left: 0; top: 55px; font-size: 70px; color: #8eb37b; transform: rotate(-15deg); }
 .small-spark { left: auto; top: auto; right: 0; bottom: 74px; color: #b0c783; font-size: 46px; }
@@ -269,7 +269,7 @@ h1 { font-family: 'Manrope', sans-serif; font-size: clamp(37px, 4.1vw, 58px); le
   .portrait-card img { height: 300px; }
   .floating-tag { border-radius: 12px; }
   .tag-script { right: 0; top: 50px; }
-  .tag-copy { left: 0; bottom: 66px; }
+  .tag-copy { left: 0; bottom: 120px; }
   .scene-spark { left: 4px; top: 45px; }
   .small-spark { left: auto; top: auto; right: 5px; bottom: 76px; }
   .hand-note { font-size: 11px; bottom: 2px; }
