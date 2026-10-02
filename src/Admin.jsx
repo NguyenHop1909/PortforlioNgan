@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import App, { PortfolioEditor } from './App';
+import App from './App';
 import { stageMedia } from './media';
 
 async function api(path, options) {
@@ -53,13 +53,21 @@ export default function Admin() {
   async function save() {
     setSaveState('saving'); setError('');
     try {
-      const prepared = await stageMedia(draft, src => api('/api/admin-image', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ src }) }), setSaveProgress);
+      const cleaned = structuredClone(draft);
+      const cleanList = items => items.map(item => item.trim()).filter(Boolean);
+      cleaned.personalInfo.fields = cleanList(cleaned.personalInfo.fields);
+      cleaned.services.forEach(service => { service.tags = cleanList(service.tags); });
+      cleaned.projects.forEach(project => {
+        project.outcomes = cleanList(project.outcomes);
+        project.links = project.links.map(link => ({ name: link.name.trim(), url: link.url.trim() })).filter(link => link.name || link.url);
+      });
+      const prepared = await stageMedia(cleaned, src => api('/api/admin-image', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ src }) }), setSaveProgress);
       setSaveProgress('Đang lưu nội dung…');
       const result = await api('/api/save-portfolio', {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...prepared, sha }),
       });
       if (!result.ok || !result.sha) throw new Error('Chưa xác nhận được việc lưu. Vui lòng kiểm tra lại.');
-      setSha(result.sha); setOriginal(structuredClone(prepared.portfolio)); setCommitUrl(result.commitUrl);
+      setSha(result.sha); setOriginal(structuredClone(prepared.portfolio)); setDraft(structuredClone(prepared.portfolio)); setCommitUrl(result.commitUrl);
       setSaveState('success');
     } catch (err) {
       setError(err.message); setSaveState('error');
@@ -95,6 +103,17 @@ export default function Admin() {
     </section>
     <App previewData={draft} />
   </div>;
+  if (authenticated && editing && draft) return <App editor={{
+    draft,
+    setDraft,
+    onChange: () => setSaveState('idle'),
+    onSave: save,
+    onPreview: preview,
+    onCancel: () => { setDraft(structuredClone(original)); setEditing(false); setError(''); setSaveState('idle'); },
+    saveState,
+    saveError: error,
+    saveProgress,
+  }} />;
   return <main className="admin-page">
     <section className="admin-card">
       <a className="wordmark" href="/">xana<span>✳</span></a>
@@ -112,8 +131,5 @@ export default function Admin() {
       {error && !editing && <p className="admin-error" role="alert">{error}</p>}
       <a className="text-link" href="/">← Về portfolio</a>
     </section>
-    {authenticated && editing && draft && <PortfolioEditor remote draft={draft} setDraft={value => { if (saveState !== 'saving') { setDraft(value); setSaveState('idle'); } }} onSave={save}
-      onPreview={preview} onClose={() => { if (saveState !== 'saving') setEditing(false); }}
-      onReset={() => { setDraft(structuredClone(original)); setSaveState('idle'); }} saveState={saveState} saveError={error} saveProgress={saveProgress} />}
   </main>;
 }

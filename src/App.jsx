@@ -148,7 +148,7 @@ function CaseStudy({ project, onClose }) {
   );
 }
 
-export default function App({ previewData = null }) {
+export default function App({ previewData = null, editor = null }) {
   const [selectedProject, setSelectedProject] = useState(null);
   const [filter, setFilter] = useState(0);
   const [expanded, setExpanded] = useState(false);
@@ -163,9 +163,10 @@ export default function App({ previewData = null }) {
     }
   });
   const [editorDraft, setEditorDraft] = useState(null);
+  const [localPreviewing, setLocalPreviewing] = useState(false);
   const [imageBusy, setImageBusy] = useState(false);
-  const editing = Boolean(editorDraft) && !previewData;
-  const portfolio = previewData || editorDraft || savedPortfolio;
+  const editing = !previewData && Boolean(editor?.draft || editorDraft);
+  const portfolio = previewData || editor?.draft || editorDraft || savedPortfolio;
   const [saveState, setSaveState] = useState('idle');
   const [saveError, setSaveError] = useState('');
   const projects = portfolio.projects.map((project, index) => ({ ...project, index }))
@@ -173,14 +174,18 @@ export default function App({ previewData = null }) {
   const visible = expanded ? projects : projects.slice(0, 4);
   const openEditor = () => { if (!editing) { setEditorDraft(cloneData(savedPortfolio)); setSelectedProject(null); } };
   const update = (section, field, value, index) => {
-    setEditorDraft(current => ({ ...current, [section]: index === undefined ? { ...current[section], [field]: value } : current[section].map((item, i) => i === index ? { ...item, [field]: value } : item) }));
-    setSaveState('idle');
+    const apply = current => ({ ...current, [section]: index === undefined ? { ...current[section], [field]: value } : current[section].map((item, i) => i === index ? { ...item, [field]: value } : item) });
+    if (editor) editor.setDraft(apply(editor.draft));
+    else setEditorDraft(apply);
+    if (editor?.onChange) editor.onChange();
+    else setSaveState('idle');
   };
-  const text = (section, field, index, fallback = '') => <EditableText value={(index === undefined ? portfolio[section][field] : portfolio[section][index][field]) ?? fallback} enabled={editing && saveState !== 'saving' && !imageBusy} label={field} onChange={value => update(section, field, value, index)} />;
+  const text = (section, field, index, fallback = '') => <EditableText value={(index === undefined ? portfolio[section][field] : portfolio[section][index][field]) ?? fallback} enabled={editing && activeSaveState !== 'saving' && !imageBusy} label={field} onChange={value => update(section, field, value, index)} />;
   const listEditor = (section, field, label, index) => <label>{label}<textarea rows="3" value={(index === undefined ? portfolio[section][field] : portfolio[section][index][field]).join('\n')} onChange={event => update(section, field, event.target.value.split('\n'), index)} /></label>;
 
   const closeEditor = () => {
-    if (saveState === 'saving' || imageBusy) return;
+    if ((editor?.saveState || saveState) === 'saving' || imageBusy) return;
+    if (editor) { editor.onCancel(); return; }
     setEditorDraft(null);
     setSaveState('idle');
     setSaveError('');
@@ -222,9 +227,23 @@ export default function App({ previewData = null }) {
       setSaveError(error.message || 'Could not save your changes. Please try again.');
     }
   };
+  const activeSaveState = editor?.saveState || saveState;
+  const activeSaveError = editor?.saveError || saveError;
+  const activeSaveProgress = editor?.saveProgress || '';
+  const previewEditor = () => {
+    if (editor) editor.onPreview();
+    else { setLocalPreviewing(true); window.scrollTo(0, 0); }
+  };
+  if (!previewData && localPreviewing && editorDraft) return <div className="portfolio-preview">
+    <section className="preview-toolbar" aria-label="Điều khiển bản xem trước">
+      <div><strong>Xem trước portfolio</strong><p>Bản nháp — chưa lưu thay đổi.</p></div>
+      <div className="preview-buttons"><button className="button secondary" onClick={() => setLocalPreviewing(false)}>Quay lại chỉnh sửa</button><button className="button" onClick={saveEditor}>Lưu thay đổi</button></div>
+    </section>
+    <App previewData={editorDraft} />
+  </div>;
   return (
     <>
-      {editing && <section className="inline-toolbar" aria-label="Chỉnh sửa portfolio"><div><strong>✎ Đang chỉnh trực tiếp</strong><p>Bấm vào chữ có viền để sửa ngay tại vị trí đó.</p></div><div className="preview-buttons"><button className="button secondary" disabled={saveState === 'saving' || imageBusy} onClick={closeEditor}>{saveState === 'success' ? 'Hoàn tất' : 'Hủy chỉnh sửa'}</button><button className="button" onClick={saveEditor} disabled={saveState === 'saving' || imageBusy}>{saveState === 'saving' ? 'Đang lưu…' : 'Lưu thay đổi'}</button></div>{saveState === 'success' && <p role="status">Đã lưu thay đổi và đẩy lên GitHub.</p>}{saveState === 'error' && <p role="alert" className="admin-error">{saveError}</p>}</section>}
+      {editing && <section className="inline-toolbar" aria-label="Chỉnh sửa portfolio"><div><strong>✎ Đang chỉnh trực tiếp</strong><p>Bấm vào chữ có viền để sửa ngay tại vị trí đó.</p></div><div className="preview-buttons"><button className="button secondary" disabled={activeSaveState === 'saving' || imageBusy} onClick={closeEditor}>{activeSaveState === 'success' ? 'Hoàn tất' : 'Hủy chỉnh sửa'}</button><button className="button secondary" onClick={previewEditor} disabled={activeSaveState === 'saving' || imageBusy}>Xem trước</button><button className="button" onClick={editor?.onSave || saveEditor} disabled={activeSaveState === 'saving' || imageBusy}>{activeSaveState === 'saving' ? 'Đang lưu…' : 'Lưu thay đổi'}</button></div>{activeSaveProgress && <p role="status">{activeSaveProgress}</p>}{activeSaveState === 'success' && <p role="status">Đã lưu thay đổi. Website production sẽ tự triển khai bản mới.</p>}{activeSaveState === 'error' && <p role="alert" className="admin-error">{activeSaveError}</p>}</section>}
       <a className="skip-link" href="#main">Skip to content</a>
       <header className="site-header shell">
         <a className="wordmark" href="#home" aria-label="Xana home">xana<span>✳</span><small>the creative space</small></a>
@@ -254,11 +273,11 @@ export default function App({ previewData = null }) {
             <span className="hand-note">your next creative partner <span aria-hidden="true">⤴</span></span>
           </div>
         </section>
-        {editing && <fieldset className="inline-image-panel shell" disabled={saveState === 'saving' || imageBusy}><legend>Ảnh cá nhân · đầu trang và phần giới thiệu</legend><ImageEditor portrait images={portfolio.personalInfo.portrait ? [portfolio.personalInfo.portrait] : []} onChange={images => update('personalInfo', 'portrait', images[0] || null)} onBusy={setImageBusy} /></fieldset>}
+        {editing && <fieldset className="inline-image-panel shell" disabled={activeSaveState === 'saving' || imageBusy}><legend>Ảnh cá nhân · đầu trang và phần giới thiệu</legend><ImageEditor portrait images={portfolio.personalInfo.portrait ? [portfolio.personalInfo.portrait] : []} onChange={images => update('personalInfo', 'portrait', images[0] || null)} onBusy={setImageBusy} /></fieldset>}
         <section className="brands shell" aria-label="Brand experience"><p>A few brands I’ve created content for</p><div><span>MB<span className="brand-star">✦</span></span><span className="vgj">VietinBank<small>GOLD & JEWELLERY</small></span><span>PÖNNIE</span><span className="oliv">Ôliv</span><span className="purite">Purité</span><span>monte</span><span className="alist">THE A LIST.</span></div></section>
         <section className="services-section shell" id="services">
           <div className="section-heading"><div><span className="eyebrow">MY CREATIVE TOOLKIT</span><h2>Different formats.<br /><span>Same love for storytelling.</span></h2></div><p>From the first idea to the final caption,<br />here’s how I bring a brand’s story to life.</p></div>
-            <div className="services-grid">{portfolio.services.map((service, index) => <article className={`service-card service-${index}`} key={index}><span className="service-icon" aria-hidden={!editing}>{text('services', 'icon', index)}</span><h3>{text('services', 'title', index)}</h3><p>{text('services', 'desc', index)}</p><div className="service-tags">{service.tags.map(tag => <span key={tag}>{tag}</span>)}</div>{editing && <fieldset className="inline-fields" disabled={saveState === 'saving' || imageBusy}>{listEditor('services', 'tags', 'Tags · mỗi dòng một mục', index)}</fieldset>}</article>)}</div>
+            <div className="services-grid">{portfolio.services.map((service, index) => <article className={`service-card service-${index}`} key={index}><span className="service-icon" aria-hidden={!editing}>{text('services', 'icon', index)}</span><h3>{text('services', 'title', index)}</h3><p>{text('services', 'desc', index)}</p><div className="service-tags">{service.tags.map(tag => <span key={tag}>{tag}</span>)}</div>{editing && <fieldset className="inline-fields" disabled={activeSaveState === 'saving' || imageBusy}>{listEditor('services', 'tags', 'Tags · mỗi dòng một mục', index)}</fieldset>}</article>)}</div>
         </section>
         <section className="work-section" id="projects"><div className="shell">
           <div className="section-heading"><div><span className="eyebrow">A PEEK INTO MY WORK</span><h2>Made with ideas.<br /><span>And a little bit of me.</span> <span className="heading-spark" aria-hidden="true">✳</span></h2></div><a className="text-link" href={CANVA_PORTFOLIO_URL} target="_blank" rel="noreferrer">View full portfolio <Arrow /></a></div>
@@ -277,7 +296,7 @@ export default function App({ previewData = null }) {
                 <span className="open-project" aria-hidden="true">↗</span>
               </div>
               <div className="project-info"><span className="project-format">{text('projects', 'category', project.index)}</span><h3>{text('projects', 'title', project.index)}</h3><p>{text('projects', 'summary', project.index)}</p><button className="case-link project-open" disabled={editing} onClick={() => setSelectedProject(project)}>Explore the project <Arrow /></button></div>
-              {editing && <details className="inline-project-details"><summary>Chỉnh chi tiết & ảnh dự án</summary><fieldset className="inline-fields" disabled={saveState === 'saving' || imageBusy}>
+              {editing && <details className="inline-project-details"><summary>Chỉnh chi tiết & ảnh dự án</summary><fieldset className="inline-fields" disabled={activeSaveState === 'saving' || imageBusy}>
                 <label>Đóng góp<textarea value={project.role} onChange={event => update('projects', 'role', event.target.value, project.index)} /></label>
                 {listEditor('projects', 'outcomes', 'Deliverables · mỗi dòng một mục', project.index)}
                 <label>Liên kết · mỗi dòng tên|URL<textarea rows="3" value={project.links.map(link => link.name + '|' + link.url).join('\n')} onChange={event => update('projects', 'links', event.target.value.split('\n').map(line => { const [name, ...url] = line.split('|'); return { name, url: url.join('|') }; }), project.index)} /></label>
@@ -290,10 +309,10 @@ export default function App({ previewData = null }) {
         </div></section>
         <section className="about-section shell" id="about">
           <div className="about-photo"><img src={portfolio.personalInfo.portrait?.src || "/work/ngan.jpg"} style={portfolio.personalInfo.portrait ? imageStyle(portfolio.personalInfo.portrait) : undefined} alt={portfolio.personalInfo.portrait?.alt || "Meet Ngân, the writer behind XANA"} loading="lazy" /><div className="about-photo-note">A curious mind,<br />a notes app full of ideas. <span aria-hidden="true">♡</span></div><span className="about-flower" aria-hidden="true">✳</span></div>
-            <div className="about-copy"><span className="eyebrow">THE HUMAN BEHIND THE CONTENT</span><h2>Hi again.<br />You can call me <span>{text('personalInfo', 'nickname')}.</span></h2><p className="full-name">{text('personalInfo', 'name')} · {text('personalInfo', 'role')}</p><p>{text('personalInfo', 'bio')}</p><p>I enjoy finding the small human insight that turns a brand message into something people actually care about.</p><div className="industry-tags">{portfolio.personalInfo.fields.map(field => <span key={field}>{field}</span>)}</div>{editing && <fieldset className="inline-fields" disabled={saveState === 'saving' || imageBusy}>{listEditor('personalInfo', 'fields', 'Lĩnh vực · mỗi dòng một mục')}</fieldset>}<div className="stats-row"><div><strong>2+</strong><span>Years creating content</span></div><div><strong>3,600+</strong><span>Project outcomes delivered</span></div></div></div>
+            <div className="about-copy"><span className="eyebrow">THE HUMAN BEHIND THE CONTENT</span><h2>Hi again.<br />You can call me <span>{text('personalInfo', 'nickname')}.</span></h2><p className="full-name">{text('personalInfo', 'name')} · {text('personalInfo', 'role')}</p><p>{text('personalInfo', 'bio')}</p><p>I enjoy finding the small human insight that turns a brand message into something people actually care about.</p><div className="industry-tags">{portfolio.personalInfo.fields.map(field => <span key={field}>{field}</span>)}</div>{editing && <fieldset className="inline-fields" disabled={activeSaveState === 'saving' || imageBusy}>{listEditor('personalInfo', 'fields', 'Lĩnh vực · mỗi dòng một mục')}</fieldset>}<div className="stats-row"><div><strong>2+</strong><span>Years creating content</span></div><div><strong>3,600+</strong><span>Project outcomes delivered</span></div></div></div>
         </section>
         <section className="process-section shell"><span className="eyebrow">HOW WE CAN WORK TOGETHER</span><h2>Good content starts with <span>a good conversation.</span></h2><div className="process-grid">{[['Let’s talk', 'Your brand, your audience, and what you want to say.'], ['Find the idea', 'A clear direction, a fresh angle, and a concept that fits.'], ['Make it happen', 'Thoughtful writing, collaborative feedback, and content ready to go.']].map(([title, description], index) => <div key={title}><span className="step-number">0{index + 1}</span><h3>{title}</h3><p>{description}</p></div>)}</div></section>
-        {editing && <section className="shell inline-contact"><h3>Thông tin liên hệ</h3><fieldset className="inline-fields" disabled={saveState === 'saving' || imageBusy}>{['email', 'phone', 'linkedin'].map(field => <label key={field}>{field}<input value={portfolio.personalInfo[field]} onChange={event => update('personalInfo', field, event.target.value)} /></label>)}</fieldset></section>}
+        {editing && <section className="shell inline-contact"><h3>Thông tin liên hệ</h3><fieldset className="inline-fields" disabled={activeSaveState === 'saving' || imageBusy}>{['email', 'phone', 'linkedin'].map(field => <label key={field}>{field}<input value={portfolio.personalInfo[field]} onChange={event => update('personalInfo', field, event.target.value)} /></label>)}</fieldset></section>}
         <section className="contact-section shell" id="contact"><div className="contact-card"><span className="contact-spark" aria-hidden="true">✳</span><span className="eyebrow">GOT A BRIEF? OR JUST A BIG IDEA?</span><h2>Let’s make something<br /><span>worth sharing.</span></h2><p>Your next brand story could start with a hello.</p><a className="button" href={`mailto:${portfolio.personalInfo.email}`}>Say hello to {portfolio.personalInfo.nickname} <Arrow /></a><a className="email-link" href={`mailto:${portfolio.personalInfo.email}`}>{portfolio.personalInfo.email}</a><span className="contact-doodle" aria-hidden="true">☺</span></div></section>
       </main>
       <footer className="footer shell"><a className="wordmark" href="#home">xana<span>✳</span></a><p>© {new Date().getFullYear()} {text('personalInfo', 'name')} · A little creativity, always.</p><div><a href={portfolio.personalInfo.linkedin} target="_blank" rel="noreferrer">LinkedIn <Arrow /></a><a href={`tel:${portfolio.personalInfo.phone.replace(/[^\d+]/g, '')}`}>Call me <Arrow /></a>{LOCAL_FILE_SAVE && !previewData && <button className="footer-edit" onClick={openEditor}>Edit <span aria-hidden="true">✎</span></button>}<a href="#home" aria-label="Back to top">↑</a></div></footer>
