@@ -384,3 +384,28 @@ h1 { font-family: 'Manrope', sans-serif; font-size: clamp(37px, 4.1vw, 58px); le
 .gallery-stack img { aspect-ratio: auto; max-height: 850px; }
 .project-gallery figcaption { margin-top: 8px; font-size: 13px; line-height: 1.6; }
 @media (max-width: 600px) { .gallery-grid { grid-template-columns: 1fr; } .editor-actions { gap: 10px; } }
+/* Edit content where it appears on the page. */
+.inline-toolbar { position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 14px max(20px, calc((100vw - 1200px) / 2)); background: #edf5e6; border-bottom: 1px solid #a7c89d; box-shadow: 0 3px 14px #203b2814; }
+.inline-toolbar p { font-size: 12px; margin-top: 5px; }
+.inline-toolbar > p { flex-basis: 100%; }
+.inline-toolbar .button { padding: 12px 18px; }
+.inline-editable { outline: 1px dashed #91b68a; outline-offset: 4px; border-radius: 3px; min-width: 1em; display: inline-block; max-width: 100%; white-space: pre-wrap; overflow-wrap: anywhere; cursor: text; }
+.inline-editable:hover { background: #e8f1e080; }
+.inline-editable:focus { outline: 2px solid var(--primary); background: #fffef2; }
+.inline-editable:empty::before { content: 'Nhập nội dung…'; opacity: .45; }
+.inline-fields { border: 0; padding: 0; margin: 18px 0 0; min-width: 0; display: grid; gap: 14px; }
+.inline-fields label { display: grid; gap: 7px; font-size: 12px; color: var(--primary); }
+.inline-fields input, .inline-fields textarea, .inline-fields select { width: 100%; min-width: 0; border: 1px solid #baceb0; border-radius: 8px; background: white; color: var(--ink); padding: 10px; font: inherit; resize: vertical; }
+.inline-fields textarea { min-height: 90px; }
+.inline-image-panel { border: 1px dashed #a7c89d; border-radius: 16px; padding: 20px; margin-block: 18px; }
+.inline-image-panel legend { font-size: 13px; padding: 0 8px; }
+.inline-image-panel .image-editor { margin: 0; }
+.inline-project-details { border-top: 1px solid var(--line); margin: 12px; padding-top: 15px; }
+.inline-project-details summary { cursor: pointer; color: var(--primary); font-size: 13px; font-weight: 600; }
+.inline-contact { padding-block: 24px; }
+.project-open { border: 0; background: transparent; cursor: pointer; padding: 8px 0; font-family: inherit; }
+.project-open:disabled { display: none; }
+.project-card:has(.inline-editable):hover { transform: none; }
+button:disabled { opacity: .6; cursor: default; }
+@media (max-width: 760px) { .inline-toolbar { padding: 12px 20px; } .inline-toolbar .button { font-size: 12px; } }
+.hero-greeting .inline-editable { color: inherit; }
